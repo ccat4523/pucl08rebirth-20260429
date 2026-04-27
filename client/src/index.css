@@ -87,14 +87,20 @@
   --sidebar-border: oklch(0.90 0.01 60);
   --sidebar-ring: oklch(0.65 0.25 50);
 }
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Noto Sans TC', 'Noto Serif TC', sans-serif;
+    font-family: 'Noto Serif TC', 'TW Kai', serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Noto Serif TC', 'TW Kai', serif;
+    font-weight: 700;
+  }
+  p, span, div, a {
+    font-family: 'Noto Serif TC', 'TW Kai', serif;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
