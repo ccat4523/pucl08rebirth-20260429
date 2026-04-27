@@ -1,6 +1,6 @@
 /**
  * VideoCarousel Component
- * 水平滾動的影片上傳區，支援5個影片
+ * 水平滾動的影片上傳區，支援2個影片
  */
 
 import { useRef, useState } from "react";
@@ -15,9 +15,9 @@ interface Video {
 export default function VideoCarousel() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [videos, setVideos] = useState<Video[]>(
-    Array.from({ length: 5 }, (_, i) => ({
+    Array.from({ length: 2 }, (_, i) => ({
       id: i + 1,
-      title: `影片 ${i + 1}`,
+      title: `宣傳片 ${i + 1}`,
     }))
   );
 
@@ -61,7 +61,7 @@ export default function VideoCarousel() {
           color: "#5a4a3a",
         }}
       >
-        展覽影片
+        宣傳片
       </h3>
 
       <div className="relative">
