@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EditableWorkCard from "@/components/EditableWorkCard";
+import VideoCarousel from "@/components/VideoCarousel";
 
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
@@ -240,6 +241,9 @@ export default function Home() {
           >
             作品展示
           </h2>
+
+          {/* 影片展示區 */}
+          <VideoCarousel />
 
           {/* 翻書動畫網格 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
