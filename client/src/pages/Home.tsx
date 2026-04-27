@@ -5,6 +5,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import { useAuth } from "@/_core/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EditableWorkCard from "@/components/EditableWorkCard";
@@ -32,6 +33,10 @@ function useInView(threshold = 0.15) {
 }
 
 export default function Home() {
+  // The userAuth hooks provides authentication state
+  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
+  let { user, loading, error, isAuthenticated, logout } = useAuth();
+
   const infoSection = useInView();
   const worksSection = useInView();
 
@@ -251,6 +256,7 @@ export default function Home() {
               <div key={work.id} style={{ animationDelay: `${index * 0.1}s` }}>
                 <EditableWorkCard
                   id={work.id}
+                  workNumber={work.id}
                   initialTitle={work.title}
                   initialAuthor={work.author}
                 />
