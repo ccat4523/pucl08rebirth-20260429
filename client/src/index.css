@@ -4,11 +4,12 @@
 @custom-variant dark (&:is(.dark *));
 
 /* 
- * 青春18LIGHT - 深宇宙舞台美學
- * Design: Cosmic Stage Aesthetics
- * Primary: Deep purple/navy cosmos background
- * Accent: Purple/violet glow effects
- * Text: White on dark backgrounds
+ * 蛻生 - 靜宜大學中國文學系第八屆畢展
+ * Design: 古典文學 × 現代蛻變
+ * Primary: 深墨綠 #1a3a3a (文學深度)
+ * Accent: 金色 #d4af37 (蛻變光芒)
+ * Secondary: 朱紅 #c41e3a (傳統熱情)
+ * Background: 米白 #f5f1e8 (宣紙質感)
  */
 
 @theme inline {
@@ -52,39 +53,39 @@
 
 :root {
   --radius: 0.5rem;
-  /* 深宇宙主題 - 深色背景 */
-  --background: oklch(0.08 0.03 285);
-  --foreground: oklch(0.95 0.005 285);
-  --card: oklch(0.12 0.025 285);
-  --card-foreground: oklch(0.95 0.005 285);
-  --popover: oklch(0.10 0.025 285);
-  --popover-foreground: oklch(0.95 0.005 285);
-  --primary: oklch(0.65 0.22 290);
+  /* 蛻生主題 - 古典文學色系 */
+  --background: oklch(0.96 0.01 60);
+  --foreground: oklch(0.15 0.03 200);
+  --card: oklch(0.98 0.005 60);
+  --card-foreground: oklch(0.15 0.03 200);
+  --popover: oklch(0.98 0.005 60);
+  --popover-foreground: oklch(0.15 0.03 200);
+  --primary: oklch(0.25 0.08 200);
   --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.15 0.03 285);
-  --secondary-foreground: oklch(0.85 0.01 285);
-  --muted: oklch(0.15 0.02 285);
-  --muted-foreground: oklch(0.65 0.01 285);
-  --accent: oklch(0.55 0.20 290);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.25 0.03 285);
-  --input: oklch(0.20 0.03 285);
-  --ring: oklch(0.65 0.22 290);
-  --chart-1: oklch(0.65 0.22 290);
-  --chart-2: oklch(0.55 0.18 270);
-  --chart-3: oklch(0.60 0.20 310);
-  --chart-4: oklch(0.70 0.15 250);
-  --chart-5: oklch(0.75 0.12 230);
-  --sidebar: oklch(0.10 0.025 285);
-  --sidebar-foreground: oklch(0.95 0.005 285);
-  --sidebar-primary: oklch(0.65 0.22 290);
+  --secondary: oklch(0.45 0.15 20);
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.85 0.01 60);
+  --muted-foreground: oklch(0.45 0.02 200);
+  --accent: oklch(0.65 0.25 50);
+  --accent-foreground: oklch(0.15 0.03 200);
+  --destructive: oklch(0.55 0.25 20);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.90 0.01 60);
+  --input: oklch(0.92 0.01 60);
+  --ring: oklch(0.65 0.25 50);
+  --chart-1: oklch(0.25 0.08 200);
+  --chart-2: oklch(0.45 0.15 20);
+  --chart-3: oklch(0.65 0.25 50);
+  --chart-4: oklch(0.35 0.10 180);
+  --chart-5: oklch(0.55 0.20 30);
+  --sidebar: oklch(0.98 0.005 60);
+  --sidebar-foreground: oklch(0.15 0.03 200);
+  --sidebar-primary: oklch(0.25 0.08 200);
   --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.15 0.03 285);
-  --sidebar-accent-foreground: oklch(0.85 0.01 285);
-  --sidebar-border: oklch(0.25 0.03 285);
-  --sidebar-ring: oklch(0.65 0.22 290);
+  --sidebar-accent: oklch(0.65 0.25 50);
+  --sidebar-accent-foreground: oklch(0.15 0.03 200);
+  --sidebar-border: oklch(0.90 0.01 60);
+  --sidebar-ring: oklch(0.65 0.25 50);
 }
 
 @layer base {
@@ -138,45 +139,38 @@
   }
 }
 
-/* 透視格線背景 */
-.perspective-grid {
+/* 宣紙紋理背景 */
+.paper-texture {
   background-image: 
-    linear-gradient(rgba(138, 92, 246, 0.15) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(138, 92, 246, 0.15) 1px, transparent 1px);
-  background-size: 60px 60px;
-  transform: perspective(500px) rotateX(30deg);
-  transform-origin: bottom center;
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(212, 175, 55, 0.03) 2px, rgba(212, 175, 55, 0.03) 4px),
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(212, 175, 55, 0.03) 2px, rgba(212, 175, 55, 0.03) 4px);
+  background-size: 100% 100%;
 }
 
-/* 聚光燈光暈效果 */
-.spotlight-glow {
-  background: radial-gradient(ellipse at 50% 0%, rgba(138, 92, 246, 0.3) 0%, transparent 70%);
+/* 毛筆筆觸邊框 */
+.brush-border {
+  border: 2px solid #d4af37;
+  box-shadow: inset 0 0 8px rgba(212, 175, 55, 0.2);
+}
+
+/* 金色分隔線 */
+.gold-divider {
+  background: linear-gradient(90deg, transparent, #d4af37, transparent);
+  height: 2px;
+  margin: 2rem 0;
 }
 
 /* 導航欄毛玻璃效果 */
 .nav-glass {
-  background: rgba(10, 5, 30, 0.85);
+  background: rgba(245, 241, 232, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(138, 92, 246, 0.2);
-}
-
-/* 卡片毛玻璃效果 */
-.card-glass {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-/* 深色卡片 */
-.card-dark {
-  background: rgba(15, 8, 40, 0.9);
-  border: 1px solid rgba(138, 92, 246, 0.2);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 /* 文字發光效果 */
 .text-glow {
-  text-shadow: 0 0 20px rgba(138, 92, 246, 0.6), 0 0 40px rgba(138, 92, 246, 0.3);
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
 }
 
 /* 淡入動畫 */
@@ -197,8 +191,14 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(138, 92, 246, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(138, 92, 246, 0.6); }
+  0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.6); }
+}
+
+@keyframes pageFlip {
+  0% { transform: rotateY(0deg); }
+  50% { transform: rotateY(90deg); }
+  100% { transform: rotateY(0deg); }
 }
 
 .animate-fade-in-up {
@@ -211,6 +211,10 @@
 
 .animate-pulse-glow {
   animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-page-flip {
+  animation: pageFlip 1.2s ease-in-out;
 }
 
 /* 延遲動畫 */
