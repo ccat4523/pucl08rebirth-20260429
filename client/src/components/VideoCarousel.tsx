@@ -16,11 +16,11 @@ interface VideoData {
 
 export default function VideoCarousel() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [isEditing, setIsEditing] = useState(false);
   
   const [videoFiles, setVideoFiles] = useState<(File | null)[]>([null, null]);
   const [videoUrls, setVideoUrls] = useState<(string | null)[]>([null, null]);
   const [videoTitles, setVideoTitles] = useState<string[]>(["宣傳片 1", "宣傳片 2"]);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
   // 獲取宣傳片列表
   const { data: videos = [] } = trpc.promotionalVideos.list.useQuery();
@@ -65,20 +65,18 @@ export default function VideoCarousel() {
     setVideoUrls(newUrls);
   };
 
-  const handleSave = async () => {
+  const handleSave = async (index: number) => {
     try {
-      for (let i = 0; i < videos.length; i++) {
-        if (videoUrls[i] || videoTitles[i] !== videos[i].title) {
-          await updateVideoMutation.mutateAsync({
-            id: videos[i].id,
-            title: videoTitles[i],
-            videoUrl: videoUrls[i] || undefined,
-          });
-        }
+      if (videos[index]) {
+        await updateVideoMutation.mutateAsync({
+          id: videos[index].id,
+          title: videoTitles[index],
+          videoUrl: videoUrls[index] || undefined,
+        });
       }
-      setIsEditing(false);
+      setEditingIndex(null);
     } catch (error) {
-      console.error("Failed to save videos:", error);
+      console.error("Failed to save video:", error);
     }
   };
 
@@ -94,23 +92,15 @@ export default function VideoCarousel() {
 
   return (
     <div className="w-full py-12 px-4">
-      <div className="flex items-center justify-between mb-8">
-        <h3
-          className="text-2xl font-bold"
-          style={{
-            fontFamily: "'Noto Serif TC', serif",
-            color: "#5a4a3a",
-          }}
-        >
-          宣傳片
-        </h3>
-        <button
-          onClick={() => setIsEditing(!isEditing)}
-          className="px-4 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-        >
-          {isEditing ? "完成編輯" : "編輯宣傳片"}
-        </button>
-      </div>
+      <h3
+        className="text-2xl font-bold text-center mb-8"
+        style={{
+          fontFamily: "'Noto Serif TC', serif",
+          color: "#5a4a3a",
+        }}
+      >
+        宣傳片
+      </h3>
 
       <div className="relative">
         {/* 左箭頭 */}
@@ -149,17 +139,15 @@ export default function VideoCarousel() {
                       className="w-full h-full object-cover"
                       controls
                     />
-                    {isEditing && (
-                      <button
-                        onClick={() => handleRemoveVideo(index)}
-                        className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <X size={20} />
-                      </button>
-                    )}
+                    <button
+                      onClick={() => handleRemoveVideo(index)}
+                      className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X size={20} />
+                    </button>
                   </>
-                ) : isEditing ? (
-                  <label className="cursor-pointer flex flex-col items-center gap-2 text-gray-500 hover:text-gray-700">
+                ) : (
+                  <label className="cursor-pointer flex flex-col items-center gap-2 text-gray-500 hover:text-gray-700 w-full h-full flex items-center justify-center">
                     <Upload size={32} />
                     <span className="text-sm">點擊上傳影片</span>
                     <input
@@ -169,39 +157,59 @@ export default function VideoCarousel() {
                       className="hidden"
                     />
                   </label>
-                ) : (
-                  <div className="flex flex-col items-center gap-2 text-gray-400">
-                    <Play size={32} />
-                    <span className="text-sm">無影片</span>
-                  </div>
                 )}
               </div>
 
               {/* 標題區域 */}
               <div className="p-4">
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={videoTitles[index]}
-                    onChange={(e) => {
-                      const newTitles = [...videoTitles];
-                      newTitles[index] = e.target.value;
-                      setVideoTitles(newTitles);
-                    }}
-                    className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
-                    placeholder="宣傳片標題"
-                    style={{ fontFamily: "'Noto Serif TC', serif" }}
-                  />
+                {editingIndex === index ? (
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      value={videoTitles[index]}
+                      onChange={(e) => {
+                        const newTitles = [...videoTitles];
+                        newTitles[index] = e.target.value;
+                        setVideoTitles(newTitles);
+                      }}
+                      className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                      placeholder="宣傳片標題"
+                      style={{ fontFamily: "'Noto Serif TC', serif" }}
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleSave(index)}
+                        disabled={updateVideoMutation.isPending}
+                        className="flex-1 px-2 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600 disabled:opacity-50"
+                      >
+                        保存
+                      </button>
+                      <button
+                        onClick={() => setEditingIndex(null)}
+                        className="flex-1 px-2 py-1 bg-gray-300 text-gray-700 rounded text-xs hover:bg-gray-400"
+                      >
+                        取消
+                      </button>
+                    </div>
+                  </div>
                 ) : (
-                  <h4
-                    className="font-bold text-center"
-                    style={{
-                      fontFamily: "'Noto Serif TC', serif",
-                      color: "#5a4a3a",
-                    }}
-                  >
-                    {videoTitles[index]}
-                  </h4>
+                  <div className="flex items-center justify-between">
+                    <h4
+                      className="font-bold flex-1"
+                      style={{
+                        fontFamily: "'Noto Serif TC', serif",
+                        color: "#5a4a3a",
+                      }}
+                    >
+                      {videoTitles[index]}
+                    </h4>
+                    <button
+                      onClick={() => setEditingIndex(index)}
+                      className="px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      編輯
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -219,24 +227,6 @@ export default function VideoCarousel() {
           </svg>
         </button>
       </div>
-
-      {isEditing && (
-        <div className="mt-4 flex justify-center gap-2">
-          <button
-            onClick={handleSave}
-            disabled={updateVideoMutation.isPending}
-            className="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
-          >
-            保存
-          </button>
-          <button
-            onClick={() => setIsEditing(false)}
-            className="px-6 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-          >
-            取消
-          </button>
-        </div>
-      )}
     </div>
   );
 }
