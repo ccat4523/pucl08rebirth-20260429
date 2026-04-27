@@ -185,7 +185,7 @@ export default function Home() {
               color: "#5a4a3a",
             }}
           >
-            關於蛻生
+            「關於蛻生」
           </h2>
 
           <div
