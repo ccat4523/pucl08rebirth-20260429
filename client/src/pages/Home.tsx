@@ -249,19 +249,21 @@ export default function Home() {
               color: "#5a4a3a",
             }}
           >
-            小組分享
+            小組作品
           </h2>
 
           {/* 小組介紹卡片網格 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {allWorks.map((work: any, index: number) => (
-              <div
+              <a
                 key={work.id}
-                className="p-6 rounded-sm transition-all duration-300 hover:shadow-lg"
+                href={`/work/${work.id}`}
+                className="p-6 rounded-sm transition-all duration-300 hover:shadow-lg block"
                 style={{
                   background: "rgba(255, 255, 255, 0.85)",
                   border: "2px solid #8b7355",
                   animationDelay: `${index * 0.1}s`,
+                  textDecoration: "none",
                 }}
               >
                 <h3
@@ -293,7 +295,7 @@ export default function Home() {
                 >
                   {work.description || "敬請期待..."}
                 </p>
-              </div>
+              </a>
             ))}
           </div>
         </div>
