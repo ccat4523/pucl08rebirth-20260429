@@ -20,24 +20,33 @@ export default function ShareButtons({
 }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
 
+  // 添加 v=2 參數到 URL
+  const getShareUrl = () => {
+    return url.includes('?') ? `${url}&v=2` : `${url}?v=2`;
+  };
+
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(url);
+    const shareUrl = getShareUrl();
+    navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleFacebookShare = () => {
-    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(title)}`;
+    const shareUrl = getShareUrl();
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(title)}`;
     window.open(facebookUrl, "_blank", "width=600,height=400");
   };
 
   const handleInstagramShare = () => {
     // Instagram 不支持直接分享連結，只能提示用戶手動分享
-    alert("請在 Instagram 上手動分享此連結：\n" + url);
+    const shareUrl = getShareUrl();
+    alert("請在 Instagram 上手動分享此連結：\n" + shareUrl);
   };
 
   const handleLineShare = () => {
-    const lineUrl = `https://line.me/R/msg/text/?${encodeURIComponent(title + " " + url)}`;
+    const shareUrl = getShareUrl();
+    const lineUrl = `https://line.me/R/msg/text/?${encodeURIComponent(title + " " + shareUrl)}`;
     window.open(lineUrl, "_blank");
   };
 

@@ -438,7 +438,7 @@ export default function WorkDetail() {
               title={editData.title || `第 ${work.workNumber} 組`}
               description={editData.description.substring(0, 100) || `第 ${work.workNumber} 組作品`}
               imageUrl={editData.image1Url || ""}
-              url={`${window.location.origin}/work/${workId}`}
+              url={`${window.location.origin}/work/${workId}?v=2`}
             />
           </div>
 

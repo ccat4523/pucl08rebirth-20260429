@@ -167,7 +167,7 @@ export default function Home() {
               title="蛻生 - 靜宜大學中國文學系第八屆畢業展覽"
               description="一千五百個日升中，指尖已結出新繭；而當遍撤的種子萌芽，我將振翅高飛。"
               imageUrl="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
-              url={window.location.origin}
+              url={`${window.location.origin}?v=2`}
             />
           </div>
 
