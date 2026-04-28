@@ -4,10 +4,8 @@
  * Features: 毛玻璃效果、金色邊框、響應式導航
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Menu, X } from "lucide-react";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { useLocation } from "wouter";
 
 const navItems = [
   { label: "主頁", href: "#home" },
@@ -18,9 +16,6 @@ const navItems = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { user } = useAuth();
-  const [, navigate] = useLocation();
-  const isAdmin = user?.role === "admin";
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -72,20 +67,6 @@ export default function Navbar() {
                 {item.label}
               </a>
             ))}
-            {isAdmin && (
-              <button
-                onClick={() => navigate("/admin")}
-                className="px-4 py-2 rounded-md font-medium transition-colors hover:opacity-80"
-                style={{
-                  fontFamily: "'Noto Sans TC', sans-serif",
-                  background: "rgba(212, 175, 55, 0.15)",
-                  color: "#d4af37",
-                  border: "1px solid rgba(212, 175, 55, 0.3)",
-                }}
-              >
-                編輯
-              </button>
-            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -123,23 +104,6 @@ export default function Navbar() {
                 {item.label}
               </a>
             ))}
-            {isAdmin && (
-              <button
-                onClick={() => {
-                  navigate("/admin");
-                  setMobileOpen(false);
-                }}
-                className="w-full px-4 py-2 rounded-md font-medium transition-colors text-left hover:opacity-80"
-                style={{
-                  fontFamily: "'Noto Sans TC', sans-serif",
-                  background: "rgba(212, 175, 55, 0.15)",
-                  color: "#d4af37",
-                  border: "1px solid rgba(212, 175, 55, 0.3)",
-                }}
-              >
-                編輯
-              </button>
-            )}
           </div>
         </div>
       )}
