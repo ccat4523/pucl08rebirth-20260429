@@ -120,10 +120,15 @@ export default function EditableWorkCard({
   // 保存作品
   const handleSave = async () => {
     try {
-      // 只保存已上傳到 S3 的 URL（不包含 base64）
-      const image1Url = imageUrls[0]?.startsWith('http') ? imageUrls[0] : undefined;
-      const image2Url = imageUrls[1]?.startsWith('http') ? imageUrls[1] : undefined;
-      const finalVideoUrl = videoUrl?.startsWith('http') ? videoUrl : undefined;
+      // 只保存已上傳的 URL（接受 /manus-storage/ 或 http 開頭，排除 base64）
+      const isValidUrl = (url?: string | null) => {
+        if (!url) return false;
+        return url.startsWith('/manus-storage/') || url.startsWith('http');
+      };
+      
+      const image1Url = isValidUrl(imageUrls[0]) ? (imageUrls[0] as string) : undefined;
+      const image2Url = isValidUrl(imageUrls[1]) ? (imageUrls[1] as string) : undefined;
+      const finalVideoUrl = isValidUrl(videoUrl) ? (videoUrl as string) : undefined;
       
       await updateWorkMutation.mutateAsync({
         id,

@@ -1,23 +1,20 @@
 /**
  * Work Detail Page - 小組作品詳情
  * Design: 報紙風格 × 古典文學
+ * Features: 1 張圖片 + 100 字介紹（可編輯）
  */
 
 import { useEffect, useState } from "react";
 import { useRoute } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { trpc } from "@/lib/trpc";
 
 export default function WorkDetail() {
-  const [match, params] = useRoute("/work/:id");
   const { user } = useAuth();
-  const workId = params?.id ? parseInt(params.id) : null;
-
-  const { data: work } = trpc.works.getById.useQuery(workId || 0, {
-    enabled: !!workId,
-  });
+  const [, params] = useRoute("/work/:id");
+  const workId = params?.id ? parseInt(params.id, 10) : null;
 
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
@@ -27,8 +24,16 @@ export default function WorkDetail() {
     image1Url: "",
     image2Url: "",
   });
+  const [imageFile1, setImageFile1] = useState<File | null>(null);
+  const [imageFile2, setImageFile2] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
-  const updateWorkMutation = trpc.works.update.useMutation();
+  const { data: work, isLoading } = trpc.works.getById.useQuery(
+    workId || 0,
+    { enabled: !!workId }
+  );
+
+  const updateMutation = trpc.works.update.useMutation();
 
   useEffect(() => {
     if (work) {
@@ -37,38 +42,35 @@ export default function WorkDetail() {
         author: work.author || "",
         description: work.description || "",
         image1Url: work.image1Url || "",
-        image2Url: work.image2Url || "",
+        image2Url: (work as any).image2Url || "",
       });
     }
   }, [work]);
 
-  const handleImageUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    imageNum: 1 | 2
-  ) => {
+  const handleImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !workId) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-
-      if (!response.ok) throw new Error("Upload failed");
-
-      const { url } = await response.json();
-      if (imageNum === 1) {
-        setEditData((prev) => ({ ...prev, image1Url: url }));
+    if (file) {
+      if (index === 1) {
+        setImageFile1(file);
       } else {
-        setEditData((prev) => ({ ...prev, image2Url: url }));
+        setImageFile2(file);
       }
-    } catch (error) {
-      console.error("Image upload error:", error);
+      // 預覽圖片
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (index === 1) {
+          setEditData({
+            ...editData,
+            image1Url: event.target?.result as string,
+          });
+        } else {
+          setEditData({
+            ...editData,
+            image2Url: event.target?.result as string,
+          });
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -76,25 +78,88 @@ export default function WorkDetail() {
     if (!workId) return;
 
     try {
-      await updateWorkMutation.mutateAsync({
+      setIsUploading(true);
+
+      // 如果有新的圖片，先上傳
+      let finalImageUrl1 = editData.image1Url;
+      let finalImageUrl2 = editData.image2Url;
+      
+      if (imageFile1) {
+        const formData = new FormData();
+        formData.append("file", imageFile1);
+        formData.append("workId", workId.toString());
+
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (uploadResponse.ok) {
+          const { url } = await uploadResponse.json();
+          finalImageUrl1 = url;
+        }
+      }
+      
+      if (imageFile2) {
+        const formData = new FormData();
+        formData.append("file", imageFile2);
+        formData.append("workId", workId.toString());
+
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (uploadResponse.ok) {
+          const { url } = await uploadResponse.json();
+          finalImageUrl2 = url;
+        }
+      }
+
+      // 更新作品資訊
+      await updateMutation.mutateAsync({
         id: workId,
         title: editData.title,
         author: editData.author,
         description: editData.description,
-        image1Url: editData.image1Url,
-        image2Url: editData.image2Url,
+        image1Url: finalImageUrl1,
+        image2Url: finalImageUrl2,
       });
+
       setIsEditing(false);
+      setImageFile1(null);
+      setImageFile2(null);
+      alert("作品資訊已更新");
     } catch (error) {
-      console.error("Save error:", error);
+      alert("更新失敗，請重試");
+    } finally {
+      setIsUploading(false);
     }
   };
 
-  if (!match || !workId) {
-    return <div>Not found</div>;
+  if (!workId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>無效的作品 ID</p>
+      </div>
+    );
   }
 
-  const isAdmin = user?.role === "admin";
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>載入中...</p>
+      </div>
+    );
+  }
+
+  if (!work) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>找不到該作品</p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -108,278 +173,316 @@ export default function WorkDetail() {
     >
       <Navbar />
 
-      {/* 詳情內容 */}
+      {/* ===== WORK DETAIL SECTION ===== */}
       <section
-        className="py-20 px-4 min-h-screen"
+        className="py-16 px-4"
         style={{
-          background: "linear-gradient(180deg, rgba(232, 223, 210, 0.8) 0%, rgba(232, 223, 210, 0.6) 100%)",
+          minHeight: "calc(100vh - 200px)",
         }}
       >
-        <div className="max-w-4xl mx-auto">
+        <div
+          className="max-w-3xl mx-auto p-8 rounded-sm"
+          style={{
+            background: "rgba(255, 255, 255, 0.9)",
+            border: "2px solid #8b7355",
+          }}
+        >
           {/* 返回按鈕 */}
           <a
             href="/"
-            className="inline-block mb-8 px-4 py-2 rounded-sm"
+            className="inline-block mb-6 text-sm"
             style={{
-              background: "rgba(139, 115, 85, 0.2)",
-              color: "#5a4a3a",
               fontFamily: "'Noto Sans TC', sans-serif",
+              color: "#8b7355",
               textDecoration: "none",
-              transition: "all 0.3s ease",
-            }}
-            onMouseEnter={(e) => {
-              (e.target as HTMLElement).style.background = "rgba(139, 115, 85, 0.4)";
-            }}
-            onMouseLeave={(e) => {
-              (e.target as HTMLElement).style.background = "rgba(139, 115, 85, 0.2)";
             }}
           >
             ← 返回
           </a>
 
-          {/* 編輯按鈕 */}
-          {isAdmin && (
-            <div className="mb-6">
-              <button
-                onClick={() => setIsEditing(!isEditing)}
-                className="px-6 py-2 rounded-sm"
-                style={{
-                  background: isEditing ? "#8b7355" : "rgba(139, 115, 85, 0.3)",
-                  color: "#fff",
-                  fontFamily: "'Noto Sans TC', sans-serif",
-                  border: "none",
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                }}
-              >
-                {isEditing ? "完成編輯" : "編輯"}
-              </button>
-            </div>
-          )}
-
-          {/* 主要內容卡片 */}
-          <div
-            className="p-8 sm:p-12 rounded-sm"
-            style={{
-              background: "rgba(255, 255, 255, 0.95)",
-              border: "2px solid #8b7355",
-              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            {/* 標題和作者 */}
-            <div className="mb-8">
-              {isEditing ? (
-                <>
-                  <input
-                    type="text"
-                    value={editData.title}
-                    onChange={(e) =>
-                      setEditData((prev) => ({ ...prev, title: e.target.value }))
-                    }
-                    className="w-full text-3xl font-bold mb-4 p-2 border-2 border-dashed border-gray-300"
-                    style={{
-                      fontFamily: "'Noto Serif TC', serif",
-                      color: "#5a4a3a",
-                    }}
-                    placeholder="作品標題"
-                  />
-                  <input
-                    type="text"
-                    value={editData.author}
-                    onChange={(e) =>
-                      setEditData((prev) => ({ ...prev, author: e.target.value }))
-                    }
-                    className="w-full text-lg p-2 border-2 border-dashed border-gray-300"
-                    style={{
-                      fontFamily: "'Noto Sans TC', sans-serif",
-                      color: "#6b5d4f",
-                    }}
-                    placeholder="創作者名稱"
-                  />
-                </>
-              ) : (
-                <>
-                  <h1
-                    className="text-3xl sm:text-4xl font-bold mb-2"
-                    style={{
-                      fontFamily: "'Noto Serif TC', serif",
-                      color: "#5a4a3a",
-                    }}
-                  >
-                    {editData.title || `第 ${workId} 組作品`}
-                  </h1>
-                  <p
-                    className="text-lg"
-                    style={{
-                      fontFamily: "'Noto Sans TC', sans-serif",
-                      color: "#6b5d4f",
-                      fontWeight: "500",
-                    }}
-                  >
-                    創作者：{editData.author || "待公布"}
-                  </p>
-                </>
-              )}
-            </div>
-
-            {/* 圖片區 */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-              {/* 圖片 1 */}
-              <div
-                className="aspect-square rounded-sm overflow-hidden"
-                style={{
-                  background: "rgba(232, 223, 210, 0.5)",
-                  border: "2px solid #8b7355",
-                }}
-              >
-                {editData.image1Url ? (
-                  <img
-                    src={editData.image1Url}
-                    alt="作品圖片 1"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div
-                    className="w-full h-full flex items-center justify-center"
-                    style={{ color: "#8b7355" }}
-                  >
-                    {isEditing ? "點擊上傳圖片 1" : "暫無圖片"}
-                  </div>
-                )}
-                {isEditing && (
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleImageUpload(e, 1)}
-                    className="hidden"
-                    id="image1-input"
-                  />
-                )}
-                {isEditing && (
-                  <label
-                    htmlFor="image1-input"
-                    className="absolute inset-0 cursor-pointer"
-                  />
-                )}
-              </div>
-
-              {/* 圖片 2 */}
-              <div
-                className="aspect-square rounded-sm overflow-hidden"
-                style={{
-                  background: "rgba(232, 223, 210, 0.5)",
-                  border: "2px solid #8b7355",
-                }}
-              >
-                {editData.image2Url ? (
-                  <img
-                    src={editData.image2Url}
-                    alt="作品圖片 2"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div
-                    className="w-full h-full flex items-center justify-center"
-                    style={{ color: "#8b7355" }}
-                  >
-                    {isEditing ? "點擊上傳圖片 2" : "暫無圖片"}
-                  </div>
-                )}
-                {isEditing && (
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleImageUpload(e, 2)}
-                    className="hidden"
-                    id="image2-input"
-                  />
-                )}
-                {isEditing && (
-                  <label
-                    htmlFor="image2-input"
-                    className="absolute inset-0 cursor-pointer"
-                  />
-                )}
-              </div>
-            </div>
-
-            {/* 文案區 */}
-            <div>
-              <h3
-                className="text-xl font-bold mb-4"
-                style={{
-                  fontFamily: "'Noto Serif TC', serif",
-                  color: "#5a4a3a",
-                }}
-              >
-                作品介紹
-              </h3>
-              {isEditing ? (
-                <textarea
-                  value={editData.description}
+          {/* 標題和作者區 */}
+          <div className="mb-8">
+            {isEditing ? (
+              <>
+                <input
+                  type="text"
+                  value={editData.title}
                   onChange={(e) =>
-                    setEditData((prev) => ({ ...prev, description: e.target.value }))
+                    setEditData({ ...editData, title: e.target.value })
                   }
-                  className="w-full p-4 border-2 border-dashed border-gray-300 rounded-sm"
+                  className="w-full text-3xl font-bold p-2 border rounded mb-4"
+                  style={{
+                    fontFamily: "'Noto Serif TC', serif",
+                    color: "#5a4a3a",
+                    borderColor: "#8b7355",
+                  }}
+                  placeholder="作品標題"
+                />
+                <input
+                  type="text"
+                  value={editData.author}
+                  onChange={(e) =>
+                    setEditData({ ...editData, author: e.target.value })
+                  }
+                  className="w-full text-lg p-2 border rounded"
                   style={{
                     fontFamily: "'Noto Sans TC', sans-serif",
-                    color: "#5a4a3a",
-                    minHeight: "300px",
-                    fontSize: "16px",
-                    lineHeight: "1.8",
+                    color: "#6b5d4f",
+                    borderColor: "#8b7355",
                   }}
-                  placeholder="輸入作品介紹文案..."
+                  placeholder="創作者"
+                />
+              </>
+            ) : (
+              <>
+                <h1
+                  className="text-3xl font-bold mb-2"
+                  style={{
+                    fontFamily: "'Noto Serif TC', serif",
+                    color: "#5a4a3a",
+                  }}
+                >
+                  {editData.title || `第 ${work.workNumber} 組`}
+                </h1>
+                <p
+                  className="text-lg"
+                  style={{
+                    fontFamily: "'Noto Sans TC', sans-serif",
+                    color: "#6b5d4f",
+                  }}
+                >
+                  創作者：{editData.author || "待公布"}
+                </p>
+              </>
+            )}
+          </div>
+
+          {/* 2 張直照片上下呈現 - 響應式設計 */}
+          <div className="mb-8 flex flex-col items-center gap-4">
+            {/* 第一張圖片 */}
+            <div
+              className="flex items-center justify-center rounded-sm overflow-hidden"
+              style={{
+                background: "rgba(200, 180, 160, 0.3)",
+                border: "2px solid #8b7355",
+                width: "100%",
+                maxWidth: "1080px",
+                aspectRatio: "1080 / 650",
+              }}
+            >
+              {editData.image1Url ? (
+                <img
+                  src={editData.image1Url}
+                  alt="作品圖片 1"
+                  className="w-full h-full object-cover"
                 />
               ) : (
                 <p
-                  className="text-base leading-relaxed"
                   style={{
                     fontFamily: "'Noto Sans TC', sans-serif",
-                    color: "#5a4a3a",
-                    whiteSpace: "pre-wrap",
-                    lineHeight: "1.8",
-                    minHeight: "200px",
+                    color: "#a89080",
                   }}
                 >
-                  {editData.description || "暫無介紹文案"}
+                  暫無圖片 1
                 </p>
               )}
             </div>
 
-            {/* 保存按鈕 */}
+            {/* 第二張圖片 */}
+            <div
+              className="flex items-center justify-center rounded-sm overflow-hidden"
+              style={{
+                background: "rgba(200, 180, 160, 0.3)",
+                border: "2px solid #8b7355",
+                width: "100%",
+                maxWidth: "1080px",
+                aspectRatio: "1080 / 650",
+              }}
+            >
+              {editData.image2Url ? (
+                <img
+                  src={editData.image2Url}
+                  alt="作品圖片 2"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <p
+                  style={{
+                    fontFamily: "'Noto Sans TC', sans-serif",
+                    color: "#a89080",
+                  }}
+                >
+                  暫無圖片 2
+                </p>
+              )}
+            </div>
+
+            {/* 圖片上傳區（編輯模式） */}
             {isEditing && (
-              <div className="mt-8 flex gap-4">
-                <button
-                  onClick={handleSave}
-                  className="px-6 py-3 rounded-sm"
+              <div className="mt-4 w-full flex flex-col gap-4">
+                <label
+                  className="block p-4 border-2 border-dashed rounded-sm text-center cursor-pointer w-full"
                   style={{
-                    background: "#8b7355",
-                    color: "#fff",
-                    fontFamily: "'Noto Sans TC', sans-serif",
-                    border: "none",
-                    cursor: "pointer",
-                    transition: "all 0.3s ease",
+                    borderColor: "#8b7355",
+                    background: "rgba(200, 180, 160, 0.1)",
                   }}
                 >
-                  保存變更
-                </button>
-                <button
-                  onClick={() => setIsEditing(false)}
-                  className="px-6 py-3 rounded-sm"
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageChange(1, e)}
+                    className="hidden"
+                  />
+                  <p
+                    style={{
+                      fontFamily: "'Noto Sans TC', sans-serif",
+                      color: "#8b7355",
+                    }}
+                  >
+                    上傳圖片 1
+                  </p>
+                </label>
+                <label
+                  className="block p-4 border-2 border-dashed rounded-sm text-center cursor-pointer w-full"
                   style={{
-                    background: "rgba(139, 115, 85, 0.2)",
-                    color: "#5a4a3a",
-                    fontFamily: "'Noto Sans TC', sans-serif",
-                    border: "none",
-                    cursor: "pointer",
-                    transition: "all 0.3s ease",
+                    borderColor: "#8b7355",
+                    background: "rgba(200, 180, 160, 0.1)",
                   }}
                 >
-                  取消
-                </button>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageChange(2, e)}
+                    className="hidden"
+                  />
+                  <p
+                    style={{
+                      fontFamily: "'Noto Sans TC', sans-serif",
+                      color: "#8b7355",
+                    }}
+                  >
+                    上傳圖片 2
+                  </p>
+                </label>
               </div>
             )}
           </div>
+
+          {/* 詳細介紹（100 字篇幅） */}
+          <div className="mb-8">
+            <h3
+              className="text-xl font-bold mb-4"
+              style={{
+                fontFamily: "'Noto Serif TC', serif",
+                color: "#5a4a3a",
+              }}
+            >
+              作品介紹
+            </h3>
+            {isEditing ? (
+              <textarea
+                value={editData.description}
+                onChange={(e) =>
+                  setEditData({ ...editData, description: e.target.value })
+                }
+                className="w-full p-4 border rounded-sm min-h-[200px]"
+                style={{
+                  fontFamily: "'Noto Sans TC', sans-serif",
+                  color: "#5a4a3a",
+                  borderColor: "#8b7355",
+                  lineHeight: "1.8",
+                }}
+                placeholder="輸入作品介紹文案（約 100 字）..."
+                maxLength={200}
+              />
+            ) : (
+              <p
+                className="leading-relaxed"
+                style={{
+                  fontFamily: "'Noto Sans TC', sans-serif",
+                  color: "#5a4a3a",
+                  lineHeight: "1.8",
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-word",
+                }}
+              >
+                {editData.description || "暇無介紹文案"}
+              </p>
+            )}
+            {isEditing && (
+              <p
+                className="text-xs mt-2"
+                style={{
+                  fontFamily: "'Noto Sans TC', sans-serif",
+                  color: "#a89080",
+                }}
+              >
+                字數：{editData.description.length} / 200
+              </p>
+            )}
+          </div>
+
+          {/* 編輯按鈕 */}
+          {user?.role === "admin" && (
+            <div className="flex gap-4">
+              {isEditing ? (
+                <>
+                  <button
+                    onClick={handleSave}
+                    disabled={isUploading || updateMutation.isPending}
+                    className="px-6 py-2 rounded-sm font-bold transition-all"
+                    style={{
+                      background: "#d4a574",
+                      color: "#ffffff",
+                      border: "none",
+                      cursor: isUploading || updateMutation.isPending ? "not-allowed" : "pointer",
+                      opacity: isUploading || updateMutation.isPending ? 0.6 : 1,
+                    }}
+                  >
+                    {isUploading || updateMutation.isPending ? "保存中..." : "完成編輯"}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsEditing(false);
+                      setImageFile1(null);
+                      setImageFile2(null);
+                      if (work) {
+                        setEditData({
+                          title: work.title || "",
+                          author: work.author || "",
+                          description: work.description || "",
+                          image1Url: work.image1Url || "",
+                          image2Url: (work as any).image2Url || "",
+                        });
+                      }
+                    }}
+                    className="px-6 py-2 rounded-sm font-bold transition-all"
+                    style={{
+                      background: "#c0b0a0",
+                      color: "#ffffff",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    取消
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="px-6 py-2 rounded-sm font-bold transition-all"
+                  style={{
+                    background: "#d4a574",
+                    color: "#ffffff",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  編輯
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
