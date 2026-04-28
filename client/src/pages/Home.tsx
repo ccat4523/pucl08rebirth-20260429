@@ -53,47 +53,48 @@ export default function Home() {
   }));
 
   return (
-    <div
-      className="min-h-screen"
-      style={{
-        background: "#e8dfd2",
-        backgroundImage: `url(https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/taiwan_newspaper_simple_bg-iPydLff9wBGrCjJy6EC5j3.webp)`,
-        backgroundSize: "cover",
-        backgroundAttachment: "fixed",
-      }}
-    >
+    <div className="min-h-screen">
       <Navbar />
 
       {/* ===== HERO SECTION ===== */}
       <section
         id="home"
-        className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-16 px-4"
-        style={{
-          background: "linear-gradient(180deg, rgba(212, 197, 176, 0.7) 0%, rgba(212, 197, 176, 0.5) 50%, rgba(212, 197, 176, 0.7) 100%)",
-        }}
+        className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
       >
-        {/* 頂部蝴蝶和手 */}
-        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 w-full max-w-2xl">
-          <img
-            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
-            alt="手中的蝴蝶"
-            className="w-full object-contain"
-            style={{
-              filter: "drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1))",
-              animation: "float 5s ease-in-out infinite",
-            }}
-          />
-        </div>
+        {/* 宇宙背景圖 */}
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: `url(https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hero_bg-LjGbvRxeFf7WoyXK7c7pHg.webp)`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
+        {/* 深色遮罩讓背景更深沉 */}
+        <div
+          className="absolute inset-0 z-[1]"
+          style={{
+            background: "linear-gradient(180deg, rgba(13,6,32,0.4) 0%, rgba(13,6,32,0.2) 50%, rgba(13,6,32,0.7) 100%)",
+          }}
+        />
+        {/* 頂部聚光燈光暈 */}
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] z-[2]"
+          style={{
+            background: "radial-gradient(ellipse at 50% 0%, rgba(138, 92, 246, 0.25) 0%, transparent 65%)",
+          }}
+        />
 
         {/* 主要內容 */}
-        <div className="relative z-10 flex flex-col items-center text-center mt-32 sm:mt-40">
+        <div className="relative z-[10] flex flex-col items-center text-center">
           {/* 蛻生標題 */}
           <h1
             className="text-5xl sm:text-6xl md:text-7xl font-bold mb-2"
             style={{
               fontFamily: "'Noto Serif TC', serif",
-              color: "#5a4a3a",
-              textShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+              color: "#ffffff",
+              textShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
               letterSpacing: "0.15em",
             }}
           >
@@ -105,7 +106,7 @@ export default function Home() {
             className="text-lg sm:text-xl mt-4 mb-8"
             style={{
               fontFamily: "'Noto Sans TC', sans-serif",
-              color: "#6b5d4f",
+              color: "#e0e0e0",
               fontWeight: "300",
               letterSpacing: "0.05em",
             }}
@@ -117,14 +118,15 @@ export default function Home() {
           <div
             className="mt-8 px-6 py-4 rounded-sm"
             style={{
-              background: "rgba(255, 255, 255, 0.6)",
-              border: "1px solid #8b7355",
+              background: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              backdropFilter: "blur(10px)",
             }}
           >
             <p
               style={{
                 fontFamily: "'Noto Sans TC', sans-serif",
-                color: "#5a4a3a",
+                color: "#e0e0e0",
                 fontSize: "14px",
               }}
             >
@@ -137,7 +139,7 @@ export default function Home() {
             <svg
               className="w-6 h-6"
               style={{
-                color: "#5a4a3a",
+                color: "#ffffff",
                 animation: "bounce 2s infinite",
               }}
               fill="none"
