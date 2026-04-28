@@ -340,7 +340,8 @@ export default function Home() {
           </h2>
 
           {/* 只顯示第一個宣傳片 */}
-          <div className="max-w-2xl mx-auto">
+          <div className="flex justify-center">
+            <div style={{ maxWidth: "400px", width: "100%" }}>
             {editingPromo ? (
               // 編輯模式
               <div
@@ -486,15 +487,19 @@ export default function Home() {
                       </button>
                     )}
                   </div>
-                  <iframe
-                    src={videos[0].videoUrl}
-                    className="w-full aspect-video rounded"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
+                  <div style={{ aspectRatio: "9/16", overflow: "hidden", borderRadius: "0.125rem" }}>
+                    <iframe
+                      src={videos[0].videoUrl}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      style={{ border: "none" }}
+                    />
+                  </div>
                 </div>
               )
             )}
+            </div>
           </div>
         </div>
       </section>
