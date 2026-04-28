@@ -37,7 +37,7 @@ DATABASE_URL              // 數據庫連接字串
 
 **檢查方式：**
 ```bash
-cd /home/ubuntu/pumc18light-clone
+cd /home/ubuntu/pucl08rebirth-clone
 echo $BUILT_IN_FORGE_API_URL
 echo $BUILT_IN_FORGE_API_KEY
 ```
@@ -275,7 +275,7 @@ const handleUploadImage = async () => {
 ### 步驟 1：檢查環境變數
 
 ```bash
-cd /home/ubuntu/pumc18light-clone
+cd /home/ubuntu/pucl08rebirth-clone
 
 # 檢查 Forge API 配置
 grep -r "BUILT_IN_FORGE_API" server/_core/env.ts
