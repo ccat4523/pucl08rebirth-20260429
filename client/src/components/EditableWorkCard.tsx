@@ -48,48 +48,96 @@ export default function EditableWorkCard({
     }
   }, [work]);
 
-  // 檔案上傳處理
-  const handleImageChange = (index: number, file: File | null) => {
+  // 上傳檔案到 S3
+  const uploadFile = async (file: File, type: 'image' | 'video'): Promise<{url: string, key: string}> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', type);
+    
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+      credentials: 'include',
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Upload failed: ${response.statusText}`);
+    }
+    
+    return response.json();
+  };
+
+  // 檔案上傳處理 - 上傳到 S3 並顯示預覽
+  const handleImageChange = async (index: number, file: File | null) => {
     const newImages = [...images];
     newImages[index] = file;
     setImages(newImages);
     
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
+      try {
+        // 先顯示本地預覽
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const newUrls = [...imageUrls];
+          newUrls[index] = e.target?.result as string;
+          setImageUrls(newUrls);
+        };
+        reader.readAsDataURL(file);
+        
+        // 上傳到 S3
+        const { url } = await uploadFile(file, 'image');
         const newUrls = [...imageUrls];
-        newUrls[index] = e.target?.result as string;
+        newUrls[index] = url;
         setImageUrls(newUrls);
-      };
-      reader.readAsDataURL(file);
+      } catch (error) {
+        console.error('Image upload failed:', error);
+        alert('圖片上傳失敗，請重試');
+      }
     }
   };
 
-  const handleVideoChange = (file: File | null) => {
+  const handleVideoChange = async (file: File | null) => {
     setVideo(file);
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setVideoUrl(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        // 先顯示本地預覽
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setVideoUrl(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+        
+        // 上傳到 S3
+        const { url } = await uploadFile(file, 'video');
+        setVideoUrl(url);
+      } catch (error) {
+        console.error('Video upload failed:', error);
+        alert('影片上傳失敗，請重試');
+      }
     }
   };
 
   // 保存作品
   const handleSave = async () => {
     try {
+      // 只保存已上傳到 S3 的 URL（不包含 base64）
+      const image1Url = imageUrls[0]?.startsWith('http') ? imageUrls[0] : undefined;
+      const image2Url = imageUrls[1]?.startsWith('http') ? imageUrls[1] : undefined;
+      const finalVideoUrl = videoUrl?.startsWith('http') ? videoUrl : undefined;
+      
       await updateWorkMutation.mutateAsync({
         id,
         title: editTitle,
         author: editAuthor,
-        image1Url: imageUrls[0] || undefined,
-        image2Url: imageUrls[1] || undefined,
-        videoUrl: videoUrl || undefined,
+        image1Url,
+        image2Url,
+        videoUrl: finalVideoUrl,
       });
       setIsEditing(false);
+      alert('作品已保存！');
     } catch (error) {
       console.error("Failed to save work:", error);
+      alert('保存失敗，請重試');
     }
   };
 
