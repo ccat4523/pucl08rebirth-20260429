@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EditableWorkCard from "@/components/EditableWorkCard";
 import VideoCarousel from "@/components/VideoCarousel";
+import { trpc } from "@/lib/trpc";
 
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
@@ -38,7 +39,11 @@ export default function Home() {
   let { user, loading, error, isAuthenticated, logout } = useAuth();
 
   const infoSection = useInView();
+  const sharingSection = useInView();
   const worksSection = useInView();
+
+  // 獲取所有作品數據
+  const { data: allWorks = [] } = trpc.works.list.useQuery();
 
   // 示例作品數據（17個）
   const works = Array.from({ length: 17 }, (_, i) => ({
@@ -219,6 +224,77 @@ export default function Home() {
             >
               這次畢業成果展，我們將展現17位同學的創意作品，透過不同的表現形式，訴說屬於我們的故事。每一件作品都是一次蛻變，每一位創作者都值得被看見。
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== SMALL GROUP SHARING SECTION ===== */}
+      <section
+        id="sharing"
+        className="py-20 px-4"
+        style={{
+          background: "linear-gradient(180deg, rgba(232, 223, 210, 0.6) 0%, rgba(232, 223, 210, 0.8) 100%)",
+        }}
+      >
+        <div
+          ref={sharingSection.ref}
+          className={`max-w-5xl mx-auto transition-all duration-1000 ${
+            sharingSection.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          }`}
+        >
+          <h2
+            className="text-3xl sm:text-4xl font-bold text-center mb-12"
+            style={{
+              fontFamily: "'Noto Serif TC', serif",
+              color: "#5a4a3a",
+            }}
+          >
+            小組分享
+          </h2>
+
+          {/* 小組介紹卡片網格 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {allWorks.map((work: any, index: number) => (
+              <div
+                key={work.id}
+                className="p-6 rounded-sm transition-all duration-300 hover:shadow-lg"
+                style={{
+                  background: "rgba(255, 255, 255, 0.85)",
+                  border: "2px solid #8b7355",
+                  animationDelay: `${index * 0.1}s`,
+                }}
+              >
+                <h3
+                  className="text-lg sm:text-xl font-bold mb-2"
+                  style={{
+                    fontFamily: "'Noto Serif TC', serif",
+                    color: "#5a4a3a",
+                  }}
+                >
+                  {work.title || `第 ${work.workNumber} 組`}
+                </h3>
+                <p
+                  className="text-sm sm:text-base mb-3"
+                  style={{
+                    fontFamily: "'Noto Sans TC', sans-serif",
+                    color: "#6b5d4f",
+                    fontWeight: "500",
+                  }}
+                >
+                  創作者：{work.author || "待公布"}
+                </p>
+                <p
+                  className="text-sm leading-relaxed"
+                  style={{
+                    fontFamily: "'Noto Sans TC', sans-serif",
+                    color: "#5a4a3a",
+                    lineHeight: "1.6",
+                  }}
+                >
+                  {work.description || "敬請期待..."}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
