@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EditableWorkCard from "@/components/EditableWorkCard";
 import VideoCarousel from "@/components/VideoCarousel";
+import ShareButtons from "@/components/ShareButtons";
 import { trpc } from "@/lib/trpc";
 
 function useInView(threshold = 0.15) {
@@ -159,6 +160,16 @@ export default function Home() {
           >
             靜宜大學中國文學系第八屆畢業展覽
           </p>
+
+          {/* 分享按鈕 */}
+          <div className="mb-8">
+            <ShareButtons
+              title="蛻生 - 靜宜大學中國文學系第八屆畢業展覽"
+              description="一千五百個日升中，指尖已結出新繭；而當遍撤的種子萌芽，我將振翅高飛。"
+              imageUrl="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
+              url={window.location.origin}
+            />
+          </div>
 
           {/* 展覽信息框 */}
           <div
@@ -536,7 +547,7 @@ export default function Home() {
               <a
                 key={work.id}
                 href={`/work/${work.id}`}
-                className="p-6 rounded-sm transition-all duration-300 hover:shadow-lg block"
+                className="rounded-sm transition-all duration-300 hover:shadow-lg block overflow-hidden"
                 style={{
                   background: "rgba(255, 255, 255, 0.85)",
                   border: "2px solid #8b7355",
@@ -544,38 +555,58 @@ export default function Home() {
                   textDecoration: "none",
                 }}
               >
-                {/* 大標題：組別名稱 */}
-                <h4
-                  className="text-xl sm:text-2xl font-bold mb-2"
-                  style={{
-                    fontFamily: "'Noto Serif TC', serif",
-                    color: "#5a4a3a",
-                  }}
-                >
-                  {work.title || `第 ${work.workNumber} 組作品`}
-                </h4>
-                {/* 子標題：組別 */}
-                <p
-                  className="text-sm sm:text-base mb-4"
-                  style={{
-                    fontFamily: "'Noto Sans TC', sans-serif",
-                    color: "#8b7355",
-                    fontWeight: "600",
-                  }}
-                >
-                  第 {work.workNumber} 組
-                </p>
-                {/* 短介紹：約 30 字 */}
-                <p
-                  className="text-sm leading-relaxed line-clamp-2"
-                  style={{
-                    fontFamily: "'Noto Sans TC', sans-serif",
-                    color: "#6b5d4f",
-                    lineHeight: "1.6",
-                  }}
-                >
-                  {work.description || "敬請期待..."}
-                </p>
+                {/* 圖片預覽 */}
+                {work.image1Url && (
+                  <div
+                    className="w-full overflow-hidden"
+                    style={{
+                      height: "200px",
+                      background: "rgba(200, 180, 160, 0.3)",
+                    }}
+                  >
+                    <img
+                      src={work.image1Url}
+                      alt={work.title || `第 ${work.workNumber} 組`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+
+                {/* 文字內容 */}
+                <div className="p-6">
+                  {/* 大標題：組別名稱 */}
+                  <h4
+                    className="text-xl sm:text-2xl font-bold mb-2"
+                    style={{
+                      fontFamily: "'Noto Serif TC', serif",
+                      color: "#5a4a3a",
+                    }}
+                  >
+                    {work.title || `第 ${work.workNumber} 組作品`}
+                  </h4>
+                  {/* 子標題：組別 */}
+                  <p
+                    className="text-sm sm:text-base mb-4"
+                    style={{
+                      fontFamily: "'Noto Sans TC', sans-serif",
+                      color: "#8b7355",
+                      fontWeight: "600",
+                    }}
+                  >
+                    第 {work.workNumber} 組
+                  </p>
+                  {/* 短介紹：約 30 字 */}
+                  <p
+                    className="text-sm leading-relaxed line-clamp-2"
+                    style={{
+                      fontFamily: "'Noto Sans TC', sans-serif",
+                      color: "#6b5d4f",
+                      lineHeight: "1.6",
+                    }}
+                  >
+                    {work.description || "敬請期待..."}
+                  </p>
+                </div>
               </a>
             ))}
           </div>

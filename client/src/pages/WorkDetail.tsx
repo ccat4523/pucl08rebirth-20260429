@@ -9,6 +9,7 @@ import { useRoute } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ShareButtons from "@/components/ShareButtons";
 import { trpc } from "@/lib/trpc";
 
 export default function WorkDetail() {
@@ -420,6 +421,25 @@ export default function WorkDetail() {
                 字數：{editData.description.length} / 200
               </p>
             )}
+          </div>
+
+          {/* 分享按鈕 */}
+          <div className="mb-8 pt-8 border-t-2" style={{ borderColor: "#8b7355" }}>
+            <h3
+              className="text-lg font-bold mb-4"
+              style={{
+                fontFamily: "'Noto Serif TC', serif",
+                color: "#5a4a3a",
+              }}
+            >
+              分享此作品
+            </h3>
+            <ShareButtons
+              title={editData.title || `第 ${work.workNumber} 組`}
+              description={editData.description.substring(0, 100) || `第 ${work.workNumber} 組作品`}
+              imageUrl={editData.image1Url || ""}
+              url={`${window.location.origin}/work/${workId}`}
+            />
           </div>
 
           {/* 編輯按鈕 */}
