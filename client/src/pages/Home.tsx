@@ -156,13 +156,61 @@ export default function Home() {
               }}
             />
           </div>
+          {/* 中間左侧紙蝶 */}
+          <div className="absolute top-1/3 left-1/4 w-24 h-24 opacity-8">
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
+              alt="紙蝶裝飾"
+              className="w-full h-full object-contain"
+              style={{
+                filter: "drop-shadow(0 1px 4px rgba(0, 0, 0, 0.03))",
+                transform: "rotate(-30deg)",
+              }}
+            />
+          </div>
+          {/* 中間右侧紙蝶 */}
+          <div className="absolute top-1/2 right-1/4 w-28 h-28 opacity-7">
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
+              alt="紙蝶裝飾"
+              className="w-full h-full object-contain"
+              style={{
+                filter: "drop-shadow(0 1px 4px rgba(0, 0, 0, 0.03))",
+                transform: "rotate(25deg) scaleX(-1)",
+              }}
+            />
+          </div>
+          {/* 左下方紙蝶 */}
+          <div className="absolute bottom-1/4 left-1/3 w-20 h-20 opacity-6">
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
+              alt="紙蝶裝飾"
+              className="w-full h-full object-contain"
+              style={{
+                filter: "drop-shadow(0 1px 4px rgba(0, 0, 0, 0.03))",
+                transform: "rotate(-45deg)",
+              }}
+            />
+          </div>
+          {/* 右下方紙蝶 */}
+          <div className="absolute bottom-1/3 right-1/3 w-24 h-24 opacity-5">
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
+              alt="紙蝶裝飾"
+              className="w-full h-full object-contain"
+              style={{
+                filter: "drop-shadow(0 1px 4px rgba(0, 0, 0, 0.03))",
+                transform: "rotate(35deg) scaleX(-1)",
+              }}
+            />
+          </div>
         </div>
 
         {/* 主要內容 */}
         <div className="relative z-10 flex flex-col items-center text-center mt-32 sm:mt-40">
           {/* 蛻生標題 */}
           <h1
-            className="text-5xl sm:text-6xl md:text-7xl font-bold mb-2"
+            className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6"
             style={{
               fontFamily: "'Noto Serif TC', serif",
               color: "#5a4a3a",
@@ -172,6 +220,19 @@ export default function Home() {
           >
             蛻　生
           </h1>
+
+          {/* 標題下的手蝴蝶 */}
+          <div className="mb-8 w-48 h-40">
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
+              alt="手中的蝴蝶"
+              className="w-full h-full object-contain"
+              style={{
+                filter: "drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1))",
+                animation: "float 5s ease-in-out infinite",
+              }}
+            />
+          </div>
 
           {/* 副標題 */}
           <p
@@ -266,6 +327,26 @@ export default function Home() {
               border: "2px solid #d4a574",
               transform: "translateX(-50%) rotate(8deg)",
               boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+            }}
+          />
+          {/* 左中下方柔和考卷 */}
+          <div
+            className="absolute -bottom-16 left-1/4 w-36 h-44 opacity-12"
+            style={{
+              background: "rgba(255, 255, 255, 0.5)",
+              border: "2px solid #d4a574",
+              transform: "rotate(-25deg)",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
+            }}
+          />
+          {/* 右中下方柔和考卷 */}
+          <div
+            className="absolute -bottom-12 right-1/4 w-44 h-52 opacity-10"
+            style={{
+              background: "rgba(255, 255, 255, 0.4)",
+              border: "2px solid #d4a574",
+              transform: "rotate(18deg)",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
             }}
           />
           {/* 左下報紙紋理 */}
