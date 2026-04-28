@@ -54,6 +54,8 @@ export default function Home() {
   const [promoUrl, setPromoUrl] = useState("");
   const [promoFile, setPromoFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [lastSavedPromo, setLastSavedPromo] = useState<string>("");
+  const [isSavingPromo, setIsSavingPromo] = useState(false);
   const updatePromoMutation = trpc.promotionalVideos.update.useMutation();
 
   // 初始化編輯表單
@@ -63,6 +65,32 @@ export default function Home() {
       setPromoUrl(videos[0].videoUrl || "");
     }
   }, [editingPromo, videos]);
+
+  // 宣傳片自動儲存
+  useEffect(() => {
+    if (!editingPromo || videos.length === 0) return;
+    
+    const autoSaveTimer = setTimeout(async () => {
+      if (promoTitle !== videos[0].title || promoUrl !== videos[0].videoUrl) {
+        try {
+          setIsSavingPromo(true);
+          await updatePromoMutation.mutateAsync({
+            id: videos[0].id,
+            title: promoTitle,
+            videoUrl: promoUrl,
+          });
+          setLastSavedPromo(new Date().toLocaleTimeString("zh-TW"));
+        } catch (error) {
+          console.error("宣傳片自動儲存失敗", error);
+        } finally {
+          setIsSavingPromo(false);
+        }
+      }
+    }, 2000); // 2 秒後自動儲存
+
+    return () => clearTimeout(autoSaveTimer);
+  }, [promoTitle, promoUrl, editingPromo, videos]);
+
 
   // 示例作品數據（17個）
   const works = Array.from({ length: 17 }, (_, i) => ({
@@ -361,6 +389,15 @@ export default function Home() {
                       onChange={(e) => setPromoFile(e.target.files?.[0] || null)}
                       className="w-full"
                     />
+                  </div>
+                  <div
+                    className="p-3 rounded-sm text-sm"
+                    style={{
+                      background: "rgba(212, 165, 116, 0.1)",
+                      color: "#8b7355",
+                    }}
+                  >
+                    {isSavingPromo ? "儲存中..." : lastSavedPromo ? `最後儲存時間：${lastSavedPromo}` : "未儲存"}
                   </div>
                   <div className="flex gap-3 justify-end">
                     <button
