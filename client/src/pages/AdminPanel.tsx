@@ -12,7 +12,7 @@ import { trpc } from "@/lib/trpc";
 
 export default function AdminPanel() {
   const { user, isAuthenticated } = useAuth();
-  const [activeTab, setActiveTab] = useState<"promo" | "works">("promo");
+  const [activeTab, setActiveTab] = useState<"promo" | "works" | "content">("promo");
   const [selectedWorkId, setSelectedWorkId] = useState<number | null>(null);
 
   // 獲取所有作品
@@ -116,6 +116,20 @@ export default function AdminPanel() {
             >
               作品管理
             </button>
+            <button
+              onClick={() => {
+                setActiveTab("content");
+                setSelectedWorkId(null);
+              }}
+              className="px-6 py-2 rounded-sm font-bold transition-all"
+              style={{
+                background: activeTab === "content" ? "#d4a574" : "rgba(255, 255, 255, 0.7)",
+                color: activeTab === "content" ? "white" : "#5a4a3a",
+                border: "2px solid #8b7355",
+              }}
+            >
+              文案管理
+            </button>
           </div>
 
           {/* 宣傳片管理 */}
@@ -190,6 +204,28 @@ export default function AdminPanel() {
                   ))}
                 </div>
               )}
+            </div>
+          )}
+
+          {/* 文案管理 */}
+          {activeTab === "content" && (
+            <div
+              className="p-8 rounded-sm"
+              style={{
+                background: "rgba(255, 255, 255, 0.9)",
+                border: "2px solid #8b7355",
+              }}
+            >
+              <h2
+                className="text-2xl font-bold mb-6"
+                style={{
+                  fontFamily: "'Noto Serif TC', serif",
+                  color: "#5a4a3a",
+                }}
+              >
+                文案管理
+              </h2>
+              <AdminContentEditor />
             </div>
           )}
         </div>
@@ -597,6 +633,118 @@ function AdminWorkEditor({ workId, onBack }: { workId: number; onBack: () => voi
           >
             {isSaving ? "儲存中..." : lastSaved ? `最後儲存時間：${lastSaved}` : "未儲存"}
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+function AdminContentEditor() {
+  const [content, setContent] = useState({
+    aboutTitle: "關於蛻生",
+    aboutDescription: "這次畢業展，17組同學、17種創作語彙，各自以不同的姿態，訴說屬於我們的故事。",
+    aboutSubtitle: "每一件作品，都是一場發現之旅；每一位創作者，都值得在聚光下被看見。",
+    worksTitle: "作品展示",
+  });
+  const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<string>("");
+
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+      // 這裡可以添加保存到後端的邏輯
+      // 暫時只保存到 localStorage
+      localStorage.setItem("pageContent", JSON.stringify(content));
+      setLastSaved(new Date().toLocaleTimeString("zh-TW"));
+    } catch (error) {
+      alert("保存失敗");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <label style={{ color: "#8b7355", fontWeight: "600" }}>「關於蛻生」標題</label>
+        <input
+          type="text"
+          value={content.aboutTitle}
+          onChange={(e) => setContent({ ...content, aboutTitle: e.target.value })}
+          className="w-full p-2 border rounded mt-1"
+          style={{ borderColor: "#8b7355" }}
+        />
+      </div>
+
+      <div>
+        <label style={{ color: "#8b7355", fontWeight: "600" }}>「關於蛻生」主要描述</label>
+        <textarea
+          value={content.aboutDescription}
+          onChange={(e) => setContent({ ...content, aboutDescription: e.target.value })}
+          className="w-full p-2 border rounded mt-1"
+          style={{ borderColor: "#8b7355", minHeight: "100px" }}
+        />
+      </div>
+
+      <div>
+        <label style={{ color: "#8b7355", fontWeight: "600" }}>「關於蛻生」副標題</label>
+        <textarea
+          value={content.aboutSubtitle}
+          onChange={(e) => setContent({ ...content, aboutSubtitle: e.target.value })}
+          className="w-full p-2 border rounded mt-1"
+          style={{ borderColor: "#8b7355", minHeight: "80px" }}
+        />
+      </div>
+
+      <div>
+        <label style={{ color: "#8b7355", fontWeight: "600" }}>「作品展示」標題</label>
+        <input
+          type="text"
+          value={content.worksTitle}
+          onChange={(e) => setContent({ ...content, worksTitle: e.target.value })}
+          className="w-full p-2 border rounded mt-1"
+          style={{ borderColor: "#8b7355" }}
+        />
+      </div>
+
+      <div className="flex gap-3">
+        <button
+          onClick={handleSave}
+          disabled={isSaving}
+          className="px-6 py-2 rounded-sm font-bold"
+          style={{
+            background: isSaving ? "#ccc" : "#d4a574",
+            color: "white",
+          }}
+        >
+          {isSaving ? "保存中..." : "保存文案"}
+        </button>
+      </div>
+
+      <div
+        className="p-3 rounded-sm text-sm"
+        style={{
+          background: "rgba(212, 165, 116, 0.1)",
+          color: "#8b7355",
+        }}
+      >
+        {isSaving ? "保存中..." : lastSaved ? `最後儲存時間：${lastSaved}` : "未儲存"}
+      </div>
+
+      <div
+        className="p-4 rounded-sm"
+        style={{
+          background: "rgba(200, 180, 160, 0.2)",
+          border: "1px solid #8b7355",
+        }}
+      >
+        <p style={{ color: "#5a4a3a", fontWeight: "600", marginBottom: "0.5rem" }}>預覽：</p>
+        <div style={{ color: "#6b5d4f", fontSize: "0.9rem", lineHeight: "1.6" }}>
+          <p><strong>{content.aboutTitle}</strong></p>
+          <p>{content.aboutDescription}</p>
+          <p style={{ marginTop: "0.5rem" }}>{content.aboutSubtitle}</p>
+          <p style={{ marginTop: "1rem" }}><strong>{content.worksTitle}</strong></p>
         </div>
       </div>
     </div>
