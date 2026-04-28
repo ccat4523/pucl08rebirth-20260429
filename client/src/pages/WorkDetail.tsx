@@ -22,8 +22,10 @@ export default function WorkDetail() {
     author: "",
     description: "",
     image1Url: "",
+    image2Url: "",
   });
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFile1, setImageFile1] = useState<File | null>(null);
+  const [imageFile2, setImageFile2] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
   const { data: work, isLoading } = trpc.works.getById.useQuery(
@@ -40,21 +42,33 @@ export default function WorkDetail() {
         author: work.author || "",
         description: work.description || "",
         image1Url: work.image1Url || "",
+        image2Url: (work as any).image2Url || "",
       });
     }
   }, [work]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setImageFile(file);
+      if (index === 1) {
+        setImageFile1(file);
+      } else {
+        setImageFile2(file);
+      }
       // 預覽圖片
       const reader = new FileReader();
       reader.onload = (event) => {
-        setEditData({
-          ...editData,
-          image1Url: event.target?.result as string,
-        });
+        if (index === 1) {
+          setEditData({
+            ...editData,
+            image1Url: event.target?.result as string,
+          });
+        } else {
+          setEditData({
+            ...editData,
+            image2Url: event.target?.result as string,
+          });
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -67,10 +81,12 @@ export default function WorkDetail() {
       setIsUploading(true);
 
       // 如果有新的圖片，先上傳
-      let finalImageUrl = editData.image1Url;
-      if (imageFile) {
+      let finalImageUrl1 = editData.image1Url;
+      let finalImageUrl2 = editData.image2Url;
+      
+      if (imageFile1) {
         const formData = new FormData();
-        formData.append("file", imageFile);
+        formData.append("file", imageFile1);
         formData.append("workId", workId.toString());
 
         const uploadResponse = await fetch("/api/upload", {
@@ -80,7 +96,23 @@ export default function WorkDetail() {
 
         if (uploadResponse.ok) {
           const { url } = await uploadResponse.json();
-          finalImageUrl = url;
+          finalImageUrl1 = url;
+        }
+      }
+      
+      if (imageFile2) {
+        const formData = new FormData();
+        formData.append("file", imageFile2);
+        formData.append("workId", workId.toString());
+
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (uploadResponse.ok) {
+          const { url } = await uploadResponse.json();
+          finalImageUrl2 = url;
         }
       }
 
@@ -90,11 +122,13 @@ export default function WorkDetail() {
         title: editData.title,
         author: editData.author,
         description: editData.description,
-        image1Url: finalImageUrl,
+        image1Url: finalImageUrl1,
+        image2Url: finalImageUrl2,
       });
 
       setIsEditing(false);
-      setImageFile(null);
+      setImageFile1(null);
+      setImageFile2(null);
       alert("作品資訊已更新");
     } catch (error) {
       alert("更新失敗，請重試");
@@ -223,41 +257,75 @@ export default function WorkDetail() {
             )}
           </div>
 
-          {/* 1 張圖片 */}
+          {/* 2 張直照片並排 */}
           <div className="mb-8">
-            <div
-              className="flex items-center justify-center rounded-sm overflow-hidden mx-auto"
-              style={{
-                background: "rgba(200, 180, 160, 0.3)",
-                border: "2px solid #8b7355",
-                width: "1080px",
-                height: "650px",
-                maxWidth: "100%",
-              }}
-            >
-              {editData.image1Url ? (
-                <img
-                  src={editData.image1Url}
-                  alt="作品圖片"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <p
-                  style={{
-                    fontFamily: "'Noto Sans TC', sans-serif",
-                    color: "#a89080",
-                  }}
-                >
-                  暫無圖片
-                </p>
-              )}
+            <div className="flex gap-4 justify-center flex-wrap">
+              {/* 第一張圖片 */}
+              <div
+                className="flex items-center justify-center rounded-sm overflow-hidden"
+                style={{
+                  background: "rgba(200, 180, 160, 0.3)",
+                  border: "2px solid #8b7355",
+                  width: "500px",
+                  height: "700px",
+                  maxWidth: "calc(50% - 8px)",
+                  minWidth: "300px",
+                }}
+              >
+                {editData.image1Url ? (
+                  <img
+                    src={editData.image1Url}
+                    alt="作品圖片 1"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <p
+                    style={{
+                      fontFamily: "'Noto Sans TC', sans-serif",
+                      color: "#a89080",
+                    }}
+                  >
+                    暫無圖片 1
+                  </p>
+                )}
+              </div>
+
+              {/* 第二張圖片 */}
+              <div
+                className="flex items-center justify-center rounded-sm overflow-hidden"
+                style={{
+                  background: "rgba(200, 180, 160, 0.3)",
+                  border: "2px solid #8b7355",
+                  width: "500px",
+                  height: "700px",
+                  maxWidth: "calc(50% - 8px)",
+                  minWidth: "300px",
+                }}
+              >
+                {editData.image2Url ? (
+                  <img
+                    src={editData.image2Url}
+                    alt="作品圖片 2"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <p
+                    style={{
+                      fontFamily: "'Noto Sans TC', sans-serif",
+                      color: "#a89080",
+                    }}
+                  >
+                    暫無圖片 2
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* 圖片上傳區（編輯模式） */}
             {isEditing && (
-              <div className="mt-4">
+              <div className="mt-4 flex gap-4 flex-wrap justify-center">
                 <label
-                  className="block p-4 border-2 border-dashed rounded-sm text-center cursor-pointer"
+                  className="block p-4 border-2 border-dashed rounded-sm text-center cursor-pointer flex-1 min-w-[200px]"
                   style={{
                     borderColor: "#8b7355",
                     background: "rgba(200, 180, 160, 0.1)",
@@ -266,7 +334,7 @@ export default function WorkDetail() {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={handleImageChange}
+                    onChange={(e) => handleImageChange(1, e)}
                     className="hidden"
                   />
                   <p
@@ -275,7 +343,29 @@ export default function WorkDetail() {
                       color: "#8b7355",
                     }}
                   >
-                    點擊上傳圖片
+                    上傳圖片 1
+                  </p>
+                </label>
+                <label
+                  className="block p-4 border-2 border-dashed rounded-sm text-center cursor-pointer flex-1 min-w-[200px]"
+                  style={{
+                    borderColor: "#8b7355",
+                    background: "rgba(200, 180, 160, 0.1)",
+                  }}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageChange(2, e)}
+                    className="hidden"
+                  />
+                  <p
+                    style={{
+                      fontFamily: "'Noto Sans TC', sans-serif",
+                      color: "#8b7355",
+                    }}
+                  >
+                    上傳圖片 2
                   </p>
                 </label>
               </div>
@@ -358,13 +448,15 @@ export default function WorkDetail() {
                   <button
                     onClick={() => {
                       setIsEditing(false);
-                      setImageFile(null);
+                      setImageFile1(null);
+                      setImageFile2(null);
                       if (work) {
                         setEditData({
                           title: work.title || "",
                           author: work.author || "",
                           description: work.description || "",
                           image1Url: work.image1Url || "",
+                          image2Url: (work as any).image2Url || "",
                         });
                       }
                     }}
