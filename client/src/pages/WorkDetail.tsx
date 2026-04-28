@@ -226,11 +226,13 @@ export default function WorkDetail() {
           {/* 1 張圖片 */}
           <div className="mb-8">
             <div
-              className="w-full aspect-square flex items-center justify-center rounded-sm overflow-hidden"
+              className="flex items-center justify-center rounded-sm overflow-hidden mx-auto"
               style={{
                 background: "rgba(200, 180, 160, 0.3)",
                 border: "2px solid #8b7355",
-                minHeight: "400px",
+                width: "1080px",
+                height: "650px",
+                maxWidth: "100%",
               }}
             >
               {editData.image1Url ? (
