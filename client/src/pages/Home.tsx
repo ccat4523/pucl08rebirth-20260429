@@ -418,7 +418,7 @@ export default function Home() {
               </div>
             ) : (
               // 顯示模式
-              videos.length > 0 && (
+              videos.length > 0 && videos[0].videoUrl && (
                 <div
                   className="p-6 rounded-sm"
                   style={{
@@ -449,23 +449,12 @@ export default function Home() {
                       </button>
                     )}
                   </div>
-                  {videos[0].videoUrl ? (
-                    <iframe
-                      src={videos[0].videoUrl}
-                      className="w-full aspect-video rounded"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  ) : (
-                    <div
-                      className="w-full aspect-video flex items-center justify-center rounded"
-                      style={{
-                        background: "rgba(200, 200, 200, 0.3)",
-                      }}
-                    >
-                      <span style={{ color: "#8b7355" }}>暫無影片</span>
-                    </div>
-                  )}
+                  <iframe
+                    src={videos[0].videoUrl}
+                    className="w-full aspect-video rounded"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
                 </div>
               )
             )}
@@ -499,7 +488,9 @@ export default function Home() {
 
           {/* 小組作品卡片網格 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {allWorks.map((work: any, index: number) => (
+            {allWorks
+              .filter((work: any) => work.image1Url) // 只顯示有圖片的作品
+              .map((work: any, index: number) => (
               <a
                 key={work.id}
                 href={`/work/${work.id}`}

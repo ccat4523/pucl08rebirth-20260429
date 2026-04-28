@@ -8,7 +8,7 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
-import { storagePut } from "../storage";
+import { storagePut, storageGetSignedUrl } from "../storage";
 import multer from "multer";
 import type { Request as ExpressRequest } from "express";
 
