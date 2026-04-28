@@ -257,7 +257,7 @@ export default function WorkDetail() {
             )}
           </div>
 
-          {/* 2 張直照片上下呈現 */}
+          {/* 2 張直照片上下呈現 - 響應式設計 */}
           <div className="mb-8 flex flex-col items-center gap-4">
             {/* 第一張圖片 */}
             <div
@@ -265,9 +265,9 @@ export default function WorkDetail() {
               style={{
                 background: "rgba(200, 180, 160, 0.3)",
                 border: "2px solid #8b7355",
-                width: "1080px",
-                height: "650px",
-                maxWidth: "100%",
+                width: "100%",
+                maxWidth: "1080px",
+                aspectRatio: "1080 / 650",
               }}
             >
               {editData.image1Url ? (
@@ -294,9 +294,9 @@ export default function WorkDetail() {
               style={{
                 background: "rgba(200, 180, 160, 0.3)",
                 border: "2px solid #8b7355",
-                width: "1080px",
-                height: "650px",
-                maxWidth: "100%",
+                width: "100%",
+                maxWidth: "1080px",
+                aspectRatio: "1080 / 650",
               }}
             >
               {editData.image2Url ? (

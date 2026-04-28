@@ -337,8 +337,10 @@ function AdminWorkEditor({ workId, onBack }: { workId: number; onBack: () => voi
     author: "",
     description: "",
     image1Url: "",
+    image2Url: "",
   });
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFile1, setImageFile1] = useState<File | null>(null);
+  const [imageFile2, setImageFile2] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [lastSaved, setLastSaved] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
@@ -350,6 +352,7 @@ function AdminWorkEditor({ workId, onBack }: { workId: number; onBack: () => voi
         author: work.author || "",
         description: work.description || "",
         image1Url: work.image1Url || "",
+        image2Url: work.image2Url || "",
       });
     }
   }, [work]);
@@ -361,7 +364,8 @@ function AdminWorkEditor({ workId, onBack }: { workId: number; onBack: () => voi
         editData.title !== work?.title ||
         editData.author !== work?.author ||
         editData.description !== work?.description ||
-        editData.image1Url !== work?.image1Url
+        editData.image1Url !== work?.image1Url ||
+        editData.image2Url !== work?.image2Url
       ) {
         try {
           setIsSaving(true);
@@ -371,6 +375,7 @@ function AdminWorkEditor({ workId, onBack }: { workId: number; onBack: () => voi
             author: editData.author,
             description: editData.description,
             image1Url: editData.image1Url,
+            image2Url: editData.image2Url,
           });
           setLastSaved(new Date().toLocaleTimeString("zh-TW"));
         } catch (error) {
@@ -382,24 +387,29 @@ function AdminWorkEditor({ workId, onBack }: { workId: number; onBack: () => voi
     }, 2000);
 
     return () => clearTimeout(autoSaveTimer);
-  }, [editData, work?.title, work?.author, work?.description, work?.image1Url]);
+  }, [editData, work?.title, work?.author, work?.description, work?.image1Url, work?.image2Url]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (imageNum: 1 | 2, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setImageFile(file);
+      if (imageNum === 1) {
+        setImageFile1(file);
+      } else {
+        setImageFile2(file);
+      }
       const reader = new FileReader();
       reader.onload = (event) => {
         setEditData({
           ...editData,
-          image1Url: event.target?.result as string,
+          [imageNum === 1 ? "image1Url" : "image2Url"]: event.target?.result as string,
         });
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleUploadImage = async () => {
+  const handleUploadImage = async (imageNum: 1 | 2) => {
+    const imageFile = imageNum === 1 ? imageFile1 : imageFile2;
     if (!imageFile) return;
 
     try {
@@ -416,9 +426,13 @@ function AdminWorkEditor({ workId, onBack }: { workId: number; onBack: () => voi
         const { url } = await uploadResponse.json();
         setEditData({
           ...editData,
-          image1Url: url,
+          [imageNum === 1 ? "image1Url" : "image2Url"]: url,
         });
-        setImageFile(null);
+        if (imageNum === 1) {
+          setImageFile1(null);
+        } else {
+          setImageFile2(null);
+        }
       }
     } catch (error) {
       alert("上傳失敗");
@@ -504,13 +518,14 @@ function AdminWorkEditor({ workId, onBack }: { workId: number; onBack: () => voi
             </p>
           </div>
 
+          {/* 第一張圖片 */}
           <div>
-            <label style={{ color: "#8b7355", fontWeight: "600" }}>圖片</label>
+            <label style={{ color: "#8b7355", fontWeight: "600" }}>圖片 1</label>
             {editData.image1Url && (
               <div className="mt-2 mb-4">
                 <img
                   src={editData.image1Url}
-                  alt="預覽"
+                  alt="預覽 1"
                   className="w-full max-w-xs rounded"
                   style={{ border: "2px solid #8b7355" }}
                 />
@@ -520,16 +535,51 @@ function AdminWorkEditor({ workId, onBack }: { workId: number; onBack: () => voi
               <input
                 type="file"
                 accept="image/*"
-                onChange={handleImageChange}
+                onChange={(e) => handleImageChange(1, e)}
                 className="flex-1 p-2 border rounded"
                 style={{ borderColor: "#8b7355" }}
               />
               <button
-                onClick={handleUploadImage}
-                disabled={!imageFile || isUploading}
-                className="px-4 py-2 rounded-sm font-bold"
+                onClick={() => handleUploadImage(1)}
+                disabled={!imageFile1 || isUploading}
+                className="px-4 py-2 rounded-sm font-bold whitespace-nowrap"
                 style={{
-                  background: !imageFile || isUploading ? "#ccc" : "#d4a574",
+                  background: !imageFile1 || isUploading ? "#ccc" : "#d4a574",
+                  color: "white",
+                }}
+              >
+                {isUploading ? "上傳中..." : "上傳"}
+              </button>
+            </div>
+          </div>
+
+          {/* 第二張圖片 */}
+          <div>
+            <label style={{ color: "#8b7355", fontWeight: "600" }}>圖片 2</label>
+            {editData.image2Url && (
+              <div className="mt-2 mb-4">
+                <img
+                  src={editData.image2Url}
+                  alt="預覽 2"
+                  className="w-full max-w-xs rounded"
+                  style={{ border: "2px solid #8b7355" }}
+                />
+              </div>
+            )}
+            <div className="flex gap-2 mt-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleImageChange(2, e)}
+                className="flex-1 p-2 border rounded"
+                style={{ borderColor: "#8b7355" }}
+              />
+              <button
+                onClick={() => handleUploadImage(2)}
+                disabled={!imageFile2 || isUploading}
+                className="px-4 py-2 rounded-sm font-bold whitespace-nowrap"
+                style={{
+                  background: !imageFile2 || isUploading ? "#ccc" : "#d4a574",
                   color: "white",
                 }}
               >
