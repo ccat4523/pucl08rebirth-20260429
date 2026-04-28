@@ -98,9 +98,9 @@ export async function getWorks() {
 
 export async function getWorkById(id: number) {
   const db = await getDb();
-  if (!db) return undefined;
+  if (!db) return null;
   const result = await db.select().from(works).where(eq(works.id, id)).limit(1);
-  return result.length > 0 ? result[0] : undefined;
+  return result.length > 0 ? result[0] : null;
 }
 
 export async function upsertWork(work: InsertWork & { id?: number }) {
@@ -123,9 +123,9 @@ export async function getPromotionalVideos() {
 
 export async function getPromotionalVideoById(id: number) {
   const db = await getDb();
-  if (!db) return undefined;
+  if (!db) return null;
   const result = await db.select().from(promotionalVideos).where(eq(promotionalVideos.id, id)).limit(1);
-  return result.length > 0 ? result[0] : undefined;
+  return result.length > 0 ? result[0] : null;
 }
 
 export async function upsertPromotionalVideo(video: InsertPromotionalVideo & { id?: number }) {
