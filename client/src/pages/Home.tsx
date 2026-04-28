@@ -134,24 +134,39 @@ export default function Home() {
 
           {/* 展覽信息框 */}
           <div
-            className="mt-8 p-6 sm:p-8 rounded-sm max-w-md"
+            className="mt-8 p-8 sm:p-10 rounded-sm max-w-2xl relative"
             style={{
-              background: "rgba(255, 255, 255, 0.9)",
-              border: "2px solid #8b7355",
+              background: "rgba(255, 255, 255, 0.95)",
+              border: "3px solid #8b7355",
+              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
             }}
           >
-            <div className="space-y-4">
-              <div className="flex items-center justify-center gap-2">
-                <span style={{ fontSize: "1.5rem" }}>▹展覽日期</span>
-                <span style={{ color: "#8b7355" }}>2026年5月12日（二）– 5月14日（四）</span>
+            {/* 左上角裝飾 */}
+            <div className="absolute -top-3 -left-3 w-6 h-6" style={{ background: "rgba(255, 255, 255, 0.9)", border: "2px solid #8b7355", transform: "rotate(45deg)" }} />
+            {/* 右下角裝飾 */}
+            <div className="absolute -bottom-3 -right-3 w-6 h-6" style={{ background: "rgba(255, 255, 255, 0.9)", border: "2px solid #8b7355", transform: "rotate(45deg)" }} />
+            
+            <div className="space-y-6">
+              <div className="flex items-start justify-start gap-4 pb-4 border-b-2 border-gray-200">
+                <span style={{ fontSize: "1.8rem", minWidth: "2rem" }}>▹</span>
+                <div>
+                  <p style={{ color: "#8b7355", fontWeight: "600", fontSize: "0.9rem", letterSpacing: "0.05em" }}>展覽日期</p>
+                  <p style={{ color: "#5a4a3a", fontSize: "1.1rem", fontWeight: "500", marginTop: "0.25rem" }}>2026年5月12日（二）– 5月14日（四）</p>
+                </div>
               </div>
-              <div className="flex items-center justify-center gap-2">
-                <span style={{ fontSize: "1.5rem" }}>🕙</span>
-                <span style={{ color: "#8b7355" }}>開放時間 09:00 – 16:00</span>
+              <div className="flex items-start justify-start gap-4 pb-4 border-b-2 border-gray-200">
+                <span style={{ fontSize: "1.8rem", minWidth: "2rem" }}>🕙</span>
+                <div>
+                  <p style={{ color: "#8b7355", fontWeight: "600", fontSize: "0.9rem", letterSpacing: "0.05em" }}>開放時間</p>
+                  <p style={{ color: "#5a4a3a", fontSize: "1.1rem", fontWeight: "500", marginTop: "0.25rem" }}>09:00 – 16:00</p>
+                </div>
               </div>
-              <div className="flex items-center justify-center gap-2">
-                <span style={{ fontSize: "1.5rem" }}>📍</span>
-                <span style={{ color: "#8b7355" }}>展覽地點 靜宜大學宜園餐廳樓上iDO培力基地</span>
+              <div className="flex items-start justify-start gap-4">
+                <span style={{ fontSize: "1.8rem", minWidth: "2rem" }}>📍</span>
+                <div>
+                  <p style={{ color: "#8b7355", fontWeight: "600", fontSize: "0.9rem", letterSpacing: "0.05em" }}>展覽地點</p>
+                  <p style={{ color: "#5a4a3a", fontSize: "1.1rem", fontWeight: "500", marginTop: "0.25rem" }}>靜宜大學宜園餐廳樓上iDO培力基地</p>
+                </div>
               </div>
             </div>
           </div>
@@ -174,6 +189,40 @@ export default function Home() {
           <svg className="w-6 h-6" style={{ color: "#5a4a3a" }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
+        </div>
+
+        {/* 底部白色考卷裝飾 */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none overflow-hidden">
+          {/* 左側考卷 */}
+          <div
+            className="absolute -bottom-8 -left-12 w-48 h-56 opacity-30"
+            style={{
+              background: "rgba(255, 255, 255, 0.8)",
+              border: "2px solid #d4a574",
+              transform: "rotate(-15deg)",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+            }}
+          />
+          {/* 右側考卷 */}
+          <div
+            className="absolute -bottom-12 -right-16 w-56 h-64 opacity-25"
+            style={{
+              background: "rgba(255, 255, 255, 0.7)",
+              border: "2px solid #d4a574",
+              transform: "rotate(20deg)",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+            }}
+          />
+          {/* 中間考卷 */}
+          <div
+            className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-40 h-48 opacity-20"
+            style={{
+              background: "rgba(255, 255, 255, 0.6)",
+              border: "2px solid #d4a574",
+              transform: "translateX(-50%) rotate(8deg)",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+            }}
+          />
         </div>
       </section>
 
