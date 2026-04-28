@@ -33,6 +33,7 @@ export const works = mysqlTable("works", {
   workNumber: int("workNumber").notNull(),
   title: varchar("title", { length: 255 }).notNull().default("作品"),
   author: varchar("author", { length: 255 }).notNull().default("創作者"),
+  description: text("description"),
   image1Url: text("image1Url"),
   image1Key: varchar("image1Key", { length: 255 }),
   image2Url: text("image2Url"),

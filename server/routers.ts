@@ -27,6 +27,7 @@ export const appRouter = router({
         workNumber: z.number().optional(),
         title: z.string().optional(),
         author: z.string().optional(),
+        description: z.string().optional(),
         image1Url: z.string().optional(),
         image1Key: z.string().optional(),
         image2Url: z.string().optional(),
