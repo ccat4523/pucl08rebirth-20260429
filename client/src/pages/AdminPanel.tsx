@@ -61,6 +61,21 @@ export default function AdminPanel() {
       {/* ===== ADMIN PANEL ===== */}
       <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
+          {/* 返回主頁按鈕 */}
+          <div className="mb-8">
+            <a
+              href="/"
+              className="inline-block px-4 py-2 rounded-sm font-bold transition-all"
+              style={{
+                background: "#d4a574",
+                color: "white",
+                textDecoration: "none",
+              }}
+            >
+              ← 返回主頁（查看外界視角）
+            </a>
+          </div>
+
           <h1
             className="text-4xl font-bold text-center mb-12"
             style={{
