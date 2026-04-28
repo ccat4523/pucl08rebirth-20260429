@@ -119,98 +119,24 @@ export default function Home() {
           background: "linear-gradient(180deg, rgba(212, 197, 176, 0.7) 0%, rgba(212, 197, 176, 0.5) 50%, rgba(212, 197, 176, 0.7) 100%)",
         }}
       >
-         {/* 背景蝶事和紙張裝飾 - 不蓋住文字 */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {/* 頂部左侧蝶 */}
-          <div className="absolute top-10 left-8 w-32 h-32 opacity-20">
-            <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
-              alt="蝶裝飾"
-              className="w-full h-full object-contain"
-              style={{
-                filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.05))",
-              }}
-            />
-          </div>
-          {/* 頂部右侧蝶 */}
-          <div className="absolute top-16 right-12 w-40 h-40 opacity-15">
-            <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
-              alt="蝶裝飾"
-              className="w-full h-full object-contain"
-              style={{
-                filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.05))",
-                transform: "scaleX(-1)",
-              }}
-            />
-          </div>
-          {/* 中後部蝶 */}
-          <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 w-48 h-48 opacity-12">
-            <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
-              alt="蝶裝飾"
-              className="w-full h-full object-contain"
-              style={{
-                filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.05))",
-                animation: "float 6s ease-in-out infinite",
-              }}
-            />
-          </div>
-          {/* 中間左侧紙蝶 */}
-          <div className="absolute top-1/3 left-1/4 w-24 h-24 opacity-8">
-            <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
-              alt="紙蝶裝飾"
-              className="w-full h-full object-contain"
-              style={{
-                filter: "drop-shadow(0 1px 4px rgba(0, 0, 0, 0.03))",
-                transform: "rotate(-30deg)",
-              }}
-            />
-          </div>
-          {/* 中間右侧紙蝶 */}
-          <div className="absolute top-1/2 right-1/4 w-28 h-28 opacity-7">
-            <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
-              alt="紙蝶裝飾"
-              className="w-full h-full object-contain"
-              style={{
-                filter: "drop-shadow(0 1px 4px rgba(0, 0, 0, 0.03))",
-                transform: "rotate(25deg) scaleX(-1)",
-              }}
-            />
-          </div>
-          {/* 左下方紙蝶 */}
-          <div className="absolute bottom-1/4 left-1/3 w-20 h-20 opacity-6">
-            <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
-              alt="紙蝶裝飾"
-              className="w-full h-full object-contain"
-              style={{
-                filter: "drop-shadow(0 1px 4px rgba(0, 0, 0, 0.03))",
-                transform: "rotate(-45deg)",
-              }}
-            />
-          </div>
-          {/* 右下方紙蝶 */}
-          <div className="absolute bottom-1/3 right-1/3 w-24 h-24 opacity-5">
-            <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
-              alt="紙蝶裝飾"
-              className="w-full h-full object-contain"
-              style={{
-                filter: "drop-shadow(0 1px 4px rgba(0, 0, 0, 0.03))",
-                transform: "rotate(35deg) scaleX(-1)",
-              }}
-            />
-          </div>
+        {/* 頂部蝴蝶和手 */}
+        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 w-full max-w-2xl">
+          <img
+            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
+            alt="手中的蝴蝶"
+            className="w-full object-contain"
+            style={{
+              filter: "drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1))",
+              animation: "float 5s ease-in-out infinite",
+            }}
+          />
         </div>
 
         {/* 主要內容 */}
         <div className="relative z-10 flex flex-col items-center text-center mt-32 sm:mt-40">
           {/* 蛻生標題 */}
           <h1
-            className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6"
+            className="text-5xl sm:text-6xl md:text-7xl font-bold mb-2"
             style={{
               fontFamily: "'Noto Serif TC', serif",
               color: "#5a4a3a",
@@ -220,19 +146,6 @@ export default function Home() {
           >
             蛻　生
           </h1>
-
-          {/* 標題下的手蝴蝶 */}
-          <div className="mb-8 w-48 h-40">
-            <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp"
-              alt="手中的蝴蝶"
-              className="w-full h-full object-contain"
-              style={{
-                filter: "drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1))",
-                animation: "float 5s ease-in-out infinite",
-              }}
-            />
-          </div>
 
           {/* 副標題 */}
           <p
@@ -297,8 +210,8 @@ export default function Home() {
           </svg>
         </div>
 
-        {/* 下部白色考卷和報紙裝飾 */}
-        <div className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none overflow-hidden">
+        {/* 底部白色考卷裝飾 */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none overflow-hidden">
           {/* 左側考卷 */}
           <div
             className="absolute -bottom-8 -left-12 w-48 h-56 opacity-30"
@@ -327,42 +240,6 @@ export default function Home() {
               border: "2px solid #d4a574",
               transform: "translateX(-50%) rotate(8deg)",
               boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-            }}
-          />
-          {/* 左中下方柔和考卷 */}
-          <div
-            className="absolute -bottom-16 left-1/4 w-36 h-44 opacity-12"
-            style={{
-              background: "rgba(255, 255, 255, 0.5)",
-              border: "2px solid #d4a574",
-              transform: "rotate(-25deg)",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
-            }}
-          />
-          {/* 右中下方柔和考卷 */}
-          <div
-            className="absolute -bottom-12 right-1/4 w-44 h-52 opacity-10"
-            style={{
-              background: "rgba(255, 255, 255, 0.4)",
-              border: "2px solid #d4a574",
-              transform: "rotate(18deg)",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
-            }}
-          />
-          {/* 左下報紙紋理 */}
-          <div
-            className="absolute -bottom-20 left-0 w-80 h-96 opacity-6"
-            style={{
-              background: "repeating-linear-gradient(0deg, #d4a574 0px, #d4a574 1px, transparent 1px, transparent 8px), repeating-linear-gradient(90deg, #d4a574 0px, #d4a574 1px, transparent 1px, transparent 12px)",
-              transform: "rotate(-20deg)",
-            }}
-          />
-          {/* 右下報紙紋理 */}
-          <div
-            className="absolute -bottom-24 right-0 w-96 h-full opacity-5"
-            style={{
-              background: "repeating-linear-gradient(0deg, #d4a574 0px, #d4a574 1px, transparent 1px, transparent 10px), repeating-linear-gradient(90deg, #d4a574 0px, #d4a574 1px, transparent 1px, transparent 14px)",
-              transform: "rotate(15deg)",
             }}
           />
         </div>
