@@ -146,27 +146,18 @@ export default function Home() {
             {/* 右下角裝飾 */}
             <div className="absolute -bottom-3 -right-3 w-6 h-6" style={{ background: "rgba(255, 255, 255, 0.9)", border: "2px solid #8b7355", transform: "rotate(45deg)" }} />
             
-            <div className="space-y-6">
-              <div className="flex items-start justify-start gap-4 pb-4 border-b-2 border-gray-200">
-                <span style={{ fontSize: "1.8rem", minWidth: "2rem" }}>▹</span>
-                <div>
-                  <p style={{ color: "#8b7355", fontWeight: "600", fontSize: "0.9rem", letterSpacing: "0.05em" }}>展覽日期</p>
-                  <p style={{ color: "#5a4a3a", fontSize: "1.1rem", fontWeight: "500", marginTop: "0.25rem" }}>2026年5月12日（二）– 5月14日（四）</p>
-                </div>
+            <div className="space-y-6 text-center">
+              <div className="pb-4 border-b-2 border-gray-200">
+                <p style={{ color: "#8b7355", fontWeight: "600", fontSize: "1rem", letterSpacing: "0.05em" }}>展覽日期</p>
+                <p style={{ color: "#5a4a3a", fontSize: "1.3rem", fontWeight: "500", marginTop: "0.5rem" }}>2026年5月12日（二）– 5月14日（四）</p>
               </div>
-              <div className="flex items-start justify-start gap-4 pb-4 border-b-2 border-gray-200">
-                <span style={{ fontSize: "1.8rem", minWidth: "2rem" }}>🕙</span>
-                <div>
-                  <p style={{ color: "#8b7355", fontWeight: "600", fontSize: "0.9rem", letterSpacing: "0.05em" }}>開放時間</p>
-                  <p style={{ color: "#5a4a3a", fontSize: "1.1rem", fontWeight: "500", marginTop: "0.25rem" }}>09:00 – 16:00</p>
-                </div>
+              <div className="pb-4 border-b-2 border-gray-200">
+                <p style={{ color: "#8b7355", fontWeight: "600", fontSize: "1rem", letterSpacing: "0.05em" }}>🕙 開放時間</p>
+                <p style={{ color: "#5a4a3a", fontSize: "1.3rem", fontWeight: "500", marginTop: "0.5rem" }}>09:00 – 16:00</p>
               </div>
-              <div className="flex items-start justify-start gap-4">
-                <span style={{ fontSize: "1.8rem", minWidth: "2rem" }}>📍</span>
-                <div>
-                  <p style={{ color: "#8b7355", fontWeight: "600", fontSize: "0.9rem", letterSpacing: "0.05em" }}>展覽地點</p>
-                  <p style={{ color: "#5a4a3a", fontSize: "1.1rem", fontWeight: "500", marginTop: "0.25rem" }}>靜宜大學宜園餐廳樓上iDO培力基地</p>
-                </div>
+              <div>
+                <p style={{ color: "#8b7355", fontWeight: "600", fontSize: "1rem", letterSpacing: "0.05em" }}>📍 展覽地點</p>
+                <p style={{ color: "#5a4a3a", fontSize: "1.3rem", fontWeight: "500", marginTop: "0.5rem" }}>靜宜大學宜園餐廳樓上iDO培力基地</p>
               </div>
             </div>
           </div>
@@ -180,7 +171,7 @@ export default function Home() {
               lineHeight: "1.8",
             }}
           >
-            「一千五百個日子中，牢尖已結出新闆；而當撤撤的種子再度，我將振翅高飛。」
+            「一千五百個日升中，指尖已結出新繭；而當遍撤的種子萌芽，我將振翅高飛。」
           </p>
         </div>
 
@@ -265,7 +256,7 @@ export default function Home() {
                 lineHeight: "1.8",
               }}
             >
-              「蛻生」象徵從我們經驗到新的綻放。中國文學的深厚，融合當代的思維，蛻變成具有文化涵養與創新的思維。蛻變成具有文化涵養與創新的思維。蛻變成具有文化涵養與創新的思維。
+              <span style={{ fontSize: "1.2rem", fontWeight: "600", color: "#5a4a3a" }}>蛻，從經驗深處，綻放新生。</span>
             </p>
             <p
               className="text-sm sm:text-base leading-relaxed mt-4"
@@ -275,7 +266,27 @@ export default function Home() {
                 lineHeight: "1.8",
               }}
             >
-              這次畢業展現果果，我們展現17位同學的創意作品，透過不同的表現方式，折射屬於我們的故事。每一件作品都是一次發現，每一位創作者都值得被看見。
+              我們以中國文學的深厚土壤為根基，澆灌當代思維的活水，蛻變成兼具文化涵養與創新能量的創作靈魂。
+            </p>
+            <p
+              className="text-sm sm:text-base leading-relaxed mt-4"
+              style={{
+                fontFamily: "'Noto Sans TC', sans-serif",
+                color: "#6b5d4f",
+                lineHeight: "1.8",
+              }}
+            >
+              這次畢業展，17位同學、17種創作語彙，各自以不同的姿態，訴說屬於我們的故事。
+            </p>
+            <p
+              className="text-sm sm:text-base leading-relaxed mt-4"
+              style={{
+                fontFamily: "'Noto Sans TC', sans-serif",
+                color: "#6b5d4f",
+                lineHeight: "1.8",
+              }}
+            >
+              每一件作品，都是一場發現之旅；每一位創作者，都值得在聚光下被看見。
             </p>
           </div>
         </div>
