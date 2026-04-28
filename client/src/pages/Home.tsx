@@ -48,6 +48,22 @@ export default function Home() {
   // 獲取宣傳片數據
   const { data: videos = [] } = trpc.promotionalVideos.list.useQuery();
 
+  // 宣傳片編輯狀態
+  const [editingPromo, setEditingPromo] = useState(false);
+  const [promoTitle, setPromoTitle] = useState("");
+  const [promoUrl, setPromoUrl] = useState("");
+  const [promoFile, setPromoFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const updatePromoMutation = trpc.promotionalVideos.update.useMutation();
+
+  // 初始化編輯表單
+  useEffect(() => {
+    if (videos.length > 0 && editingPromo) {
+      setPromoTitle(videos[0].title || "");
+      setPromoUrl(videos[0].videoUrl || "");
+    }
+  }, [editingPromo, videos]);
+
   // 示例作品數據（17個）
   const works = Array.from({ length: 17 }, (_, i) => ({
     id: i + 1,
@@ -105,94 +121,78 @@ export default function Home() {
 
           {/* 副標題 */}
           <p
-            className="text-base sm:text-lg md:text-xl mb-8"
+            className="text-lg sm:text-xl md:text-2xl mb-8"
             style={{
               fontFamily: "'Noto Sans TC', sans-serif",
-              color: "#6b5d4f",
-              fontWeight: "500",
+              color: "#8b7355",
+              fontWeight: "300",
+              letterSpacing: "0.05em",
             }}
           >
             靜宜大學中國文學系第八屆畢業展覽
           </p>
 
-          {/* 展覽資訊卡片 */}
+          {/* 展覽信息框 */}
           <div
-            className="p-6 sm:p-8 rounded-sm"
+            className="mt-8 p-6 sm:p-8 rounded-sm max-w-md"
             style={{
-              background: "rgba(255, 255, 255, 0.85)",
-              border: "3px solid #8b7355",
-              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
-              maxWidth: "500px",
+              background: "rgba(255, 255, 255, 0.9)",
+              border: "2px solid #8b7355",
             }}
           >
-            <div
-              className="space-y-3"
-              style={{
-                fontFamily: "'Noto Sans TC', sans-serif",
-                color: "#5a4a3a",
-              }}
-            >
-              <div className="flex items-center justify-center gap-3">
-                <span style={{ fontSize: "20px", fontWeight: "bold" }}>▹展覽日期</span>
-                <span>2026年5月12日（二）– 5月14日（四）</span>
+            <div className="space-y-4">
+              <div className="flex items-center justify-center gap-2">
+                <span style={{ fontSize: "1.5rem" }}>▹展覽日期</span>
+                <span style={{ color: "#8b7355" }}>2026年5月12日（二）– 5月14日（四）</span>
               </div>
-              <div className="flex items-center justify-center gap-3">
-                <span style={{ fontSize: "20px", fontWeight: "bold" }}>🕙 開放時間</span>
-                <span>09:00 – 16:00</span>
+              <div className="flex items-center justify-center gap-2">
+                <span style={{ fontSize: "1.5rem" }}>🕙</span>
+                <span style={{ color: "#8b7355" }}>開放時間 09:00 – 16:00</span>
               </div>
-              <div className="flex items-center justify-center gap-3">
-                <span style={{ fontSize: "20px", fontWeight: "bold" }}>📍 展覽地點</span>
-                <span>靜宜大學宜園餐廳樓上iDO培力基地</span>
+              <div className="flex items-center justify-center gap-2">
+                <span style={{ fontSize: "1.5rem" }}>📍</span>
+                <span style={{ color: "#8b7355" }}>展覽地點 靜宜大學宜園餐廳樓上iDO培力基地</span>
               </div>
             </div>
           </div>
 
-          {/* 引言文字 */}
-          <div className="mt-12 max-w-2xl px-4">
-            <p
-              className="text-sm sm:text-base leading-relaxed italic"
-              style={{
-                fontFamily: "'Noto Serif TC', serif",
-                color: "#6b5d4f",
-                background: "rgba(255, 255, 255, 0.6)",
-                padding: "1rem",
-                borderLeft: "4px solid #8b7355",
-              }}
-            >
-              「一千五百個日升中，筆尖已結出新蘭；而當撒撤的種子萌芽，我將振翅高飛。」
-            </p>
-          </div>
+          {/* 引言 */}
+          <p
+            className="mt-12 max-w-2xl italic text-sm sm:text-base"
+            style={{
+              fontFamily: "'Noto Sans TC', sans-serif",
+              color: "#6b5d4f",
+              lineHeight: "1.8",
+            }}
+          >
+            「一千五百個日子中，牢尖已結出新闆；而當撤撤的種子再度，我將振翅高飛。」
+          </p>
         </div>
 
-        {/* 底部書籍和羽毛 */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 w-full max-w-2xl">
-          <img
-            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/open_book_feather-DhpZn5T8K5L6tMb9suYogY.webp"
-            alt="打開的書籍"
-            className="w-full object-contain opacity-70"
-            style={{
-              animation: "float 6s ease-in-out infinite reverse",
-            }}
-          />
+        {/* 向下箭頭 */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <svg className="w-6 h-6" style={{ color: "#5a4a3a" }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
         </div>
       </section>
 
-      {/* ===== EXHIBITION INFO SECTION ===== */}
+      {/* ===== INFO SECTION ===== */}
       <section
         id="info"
         className="py-20 px-4"
         style={{
-          background: "linear-gradient(180deg, rgba(232, 223, 210, 0.8) 0%, rgba(232, 223, 210, 0.6) 100%)",
+          background: "linear-gradient(180deg, rgba(232, 223, 210, 0.6) 0%, rgba(232, 223, 210, 0.8) 100%)",
         }}
       >
         <div
           ref={infoSection.ref}
-          className={`max-w-3xl mx-auto transition-all duration-1000 ${
+          className={`max-w-5xl mx-auto transition-all duration-1000 ${
             infoSection.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
           <h2
-            className="text-3xl sm:text-4xl font-bold text-center mb-12"
+            className="text-3xl sm:text-4xl font-bold text-center mb-8"
             style={{
               fontFamily: "'Noto Serif TC', serif",
               color: "#5a4a3a",
@@ -202,36 +202,35 @@ export default function Home() {
           </h2>
 
           <div
-            className="p-8 sm:p-10 rounded-sm"
+            className="p-6 sm:p-8 rounded-sm"
             style={{
-              background: "rgba(255, 255, 255, 0.9)",
+              background: "rgba(255, 255, 255, 0.85)",
               border: "2px solid #8b7355",
-              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
             }}
           >
             <p
-              className="text-base sm:text-lg leading-relaxed mb-6"
+              className="text-sm sm:text-base leading-relaxed"
               style={{
                 fontFamily: "'Noto Sans TC', sans-serif",
-                color: "#5a4a3a",
+                color: "#6b5d4f",
+                lineHeight: "1.8",
               }}
             >
-              「蛻生」象徵著從舊我蛻變到新我，從文學的沉思到現實的綻放。中國文學系第八屆的同學們，在四年的學習中，汲取古典文學的精華，融合現代創意的思維，蛻變成為具有文化涵養與創新精神的新世代文化工作者。
+              「蛻生」象徵從我們經驗到新的綻放。中國文學的深厚，融合當代的思維，蛻變成具有文化涵養與創新的思維。蛻變成具有文化涵養與創新的思維。蛻變成具有文化涵養與創新的思維。
             </p>
             <p
-              className="text-base sm:text-lg leading-relaxed"
+              className="text-sm sm:text-base leading-relaxed mt-4"
               style={{
                 fontFamily: "'Noto Sans TC', sans-serif",
-                color: "#5a4a3a",
+                color: "#6b5d4f",
+                lineHeight: "1.8",
               }}
             >
-              這次畢業成果展，我們將展現17位同學的創意作品，透過不同的表現形式，訴說屬於我們的故事。每一件作品都是一次蛻變，每一位創作者都值得被看見。
+              這次畢業展現果果，我們展現17位同學的創意作品，透過不同的表現方式，折射屬於我們的故事。每一件作品都是一次發現，每一位創作者都值得被看見。
             </p>
           </div>
         </div>
       </section>
-
-
 
       {/* ===== PROMOTIONAL VIDEO SECTION ===== */}
       <section
@@ -241,9 +240,7 @@ export default function Home() {
           background: "linear-gradient(180deg, rgba(232, 223, 210, 0.6) 0%, rgba(232, 223, 210, 0.8) 100%)",
         }}
       >
-        <div
-          className="max-w-5xl mx-auto"
-        >
+        <div className="max-w-5xl mx-auto">
           <h2
             className="text-3xl sm:text-4xl font-bold text-center mb-12"
             style={{
@@ -256,7 +253,8 @@ export default function Home() {
 
           {/* 只顯示第一個宣傳片 */}
           <div className="max-w-2xl mx-auto">
-            {videos.length > 0 && (
+            {editingPromo ? (
+              // 編輯模式
               <div
                 className="p-6 rounded-sm"
                 style={{
@@ -264,33 +262,152 @@ export default function Home() {
                   border: "2px solid #8b7355",
                 }}
               >
-                <h3
-                  className="text-xl font-bold mb-4 text-center"
+                <h3 className="text-xl font-bold mb-4" style={{ color: "#5a4a3a" }}>
+                  編輯宣傳片
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: "#5a4a3a" }}>
+                      標題
+                    </label>
+                    <input
+                      type="text"
+                      value={promoTitle}
+                      onChange={(e) => setPromoTitle(e.target.value)}
+                      className="w-full px-3 py-2 border rounded"
+                      style={{ borderColor: "#8b7355" }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: "#5a4a3a" }}>
+                      影片 URL
+                    </label>
+                    <input
+                      type="text"
+                      value={promoUrl}
+                      onChange={(e) => setPromoUrl(e.target.value)}
+                      placeholder="https://www.youtube.com/embed/..."
+                      className="w-full px-3 py-2 border rounded"
+                      style={{ borderColor: "#8b7355" }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: "#5a4a3a" }}>
+                      上傳影片檔案
+                    </label>
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={(e) => setPromoFile(e.target.files?.[0] || null)}
+                      className="w-full"
+                    />
+                  </div>
+                  <div className="flex gap-3 justify-end">
+                    <button
+                      onClick={() => {
+                        setEditingPromo(false);
+                        setPromoFile(null);
+                      }}
+                      className="px-4 py-2 rounded"
+                      style={{
+                        background: "#e8dfd2",
+                        color: "#5a4a3a",
+                        border: "1px solid #8b7355",
+                      }}
+                    >
+                      取消
+                    </button>
+                    <button
+                      onClick={async () => {
+                        try {
+                          let finalUrl = promoUrl;
+                          if (promoFile) {
+                            setUploading(true);
+                            const formData = new FormData();
+                            formData.append("file", promoFile);
+                            const res = await fetch("/api/upload", {
+                              method: "POST",
+                              body: formData,
+                            });
+                            const data = await res.json();
+                            finalUrl = data.url;
+                            setUploading(false);
+                          }
+                          await updatePromoMutation.mutateAsync({
+                            id: videos[0].id,
+                            title: promoTitle,
+                            videoUrl: finalUrl,
+                          });
+                          setEditingPromo(false);
+                          setPromoFile(null);
+                        } catch (error) {
+                          console.error("保存失敗", error);
+                          setUploading(false);
+                        }
+                      }}
+                      disabled={updatePromoMutation.isPending || uploading}
+                      className="px-4 py-2 rounded text-white"
+                      style={{
+                        background: "#d4a574",
+                      }}
+                    >
+                      {updatePromoMutation.isPending || uploading ? "保存中..." : "保存"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // 顯示模式
+              videos.length > 0 && (
+                <div
+                  className="p-6 rounded-sm"
                   style={{
-                    fontFamily: "'Noto Serif TC', serif",
-                    color: "#5a4a3a",
+                    background: "rgba(255, 255, 255, 0.85)",
+                    border: "2px solid #8b7355",
                   }}
                 >
-                  {videos[0].title || "宣傳片"}
-                </h3>
-                {videos[0].videoUrl ? (
-                  <iframe
-                    src={videos[0].videoUrl}
-                    className="w-full aspect-video rounded"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : (
-                  <div
-                    className="w-full aspect-video flex items-center justify-center rounded"
-                    style={{
-                      background: "rgba(200, 200, 200, 0.3)",
-                    }}
-                  >
-                    <span style={{ color: "#8b7355" }}>暫無影片</span>
+                  <div className="flex justify-between items-center mb-4">
+                    <h3
+                      className="text-xl font-bold"
+                      style={{
+                        fontFamily: "'Noto Serif TC', serif",
+                        color: "#5a4a3a",
+                      }}
+                    >
+                      {videos[0].title || "宣傳片"}
+                    </h3>
+                    {isAuthenticated && user?.role === "admin" && (
+                      <button
+                        onClick={() => setEditingPromo(true)}
+                        className="px-3 py-1 rounded text-sm"
+                        style={{
+                          background: "#d4a574",
+                          color: "white",
+                        }}
+                      >
+                        編輯
+                      </button>
+                    )}
                   </div>
-                )}
-              </div>
+                  {videos[0].videoUrl ? (
+                    <iframe
+                      src={videos[0].videoUrl}
+                      className="w-full aspect-video rounded"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <div
+                      className="w-full aspect-video flex items-center justify-center rounded"
+                      style={{
+                        background: "rgba(200, 200, 200, 0.3)",
+                      }}
+                    >
+                      <span style={{ color: "#8b7355" }}>暫無影片</span>
+                    </div>
+                  )}
+                </div>
+              )
             )}
           </div>
         </div>
@@ -369,8 +486,6 @@ export default function Home() {
               </a>
             ))}
           </div>
-
-
         </div>
       </section>
 
@@ -381,20 +496,12 @@ export default function Home() {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-20px); }
         }
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
         }
-        @keyframes pageFlip {
-          0% { transform: scaleX(1); }
-          50% { transform: scaleX(0); }
-          100% { transform: scaleX(1); }
+        .animate-bounce {
+          animation: bounce 2s infinite;
         }
       `}</style>
     </div>
