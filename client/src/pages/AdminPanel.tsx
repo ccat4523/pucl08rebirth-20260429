@@ -1,7 +1,7 @@
 /**
  * Admin Panel - 管理員後台系統
  * 功能：編輯宣傳片、各組照片、文案
- * 權限：只有管理員可訪問
+ * 特性：倒退、自動儲存、補全資訊
  */
 
 import { useState, useEffect } from "react";
@@ -74,7 +74,10 @@ export default function AdminPanel() {
           {/* 標籤頁 */}
           <div className="flex gap-4 mb-8 justify-center">
             <button
-              onClick={() => setActiveTab("promo")}
+              onClick={() => {
+                setActiveTab("promo");
+                setSelectedWorkId(null);
+              }}
               className="px-6 py-2 rounded-sm font-bold transition-all"
               style={{
                 background: activeTab === "promo" ? "#d4a574" : "rgba(255, 255, 255, 0.7)",
@@ -85,7 +88,10 @@ export default function AdminPanel() {
               宣傳片管理
             </button>
             <button
-              onClick={() => setActiveTab("works")}
+              onClick={() => {
+                setActiveTab("works");
+                setSelectedWorkId(null);
+              }}
               className="px-6 py-2 rounded-sm font-bold transition-all"
               style={{
                 background: activeTab === "works" ? "#d4a574" : "rgba(255, 255, 255, 0.7)",
@@ -116,25 +122,7 @@ export default function AdminPanel() {
                 宣傳片管理
               </h2>
               {videos.length > 0 ? (
-                <div>
-                  <p style={{ color: "#6b5d4f", marginBottom: "1rem" }}>
-                    標題：{videos[0].title || "未設置"}
-                  </p>
-                  <p style={{ color: "#6b5d4f", marginBottom: "1rem" }}>
-                    影片 URL：{videos[0].videoUrl || "未設置"}
-                  </p>
-                  <a
-                    href="/"
-                    className="inline-block px-4 py-2 rounded-sm"
-                    style={{
-                      background: "#d4a574",
-                      color: "white",
-                      textDecoration: "none",
-                    }}
-                  >
-                    編輯宣傳片
-                  </a>
-                </div>
+                <AdminPromoEditor video={videos[0]} />
               ) : (
                 <p style={{ color: "#6b5d4f" }}>暫無宣傳片</p>
               )}
@@ -160,31 +148,32 @@ export default function AdminPanel() {
                 作品管理
               </h2>
 
-              {/* 作品列表 */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                {allWorks.map((work: any) => (
-                  <button
-                    key={work.id}
-                    onClick={() => setSelectedWorkId(work.id)}
-                    className="p-4 rounded-sm text-left transition-all"
-                    style={{
-                      background:
-                        selectedWorkId === work.id
-                          ? "#d4a574"
-                          : "rgba(200, 180, 160, 0.3)",
-                      border: "2px solid #8b7355",
-                      color: selectedWorkId === work.id ? "white" : "#5a4a3a",
-                    }}
-                  >
-                    <p className="font-bold">{work.title || `第 ${work.workNumber} 組`}</p>
-                    <p className="text-sm">創作者：{work.author || "待公布"}</p>
-                  </button>
-                ))}
-              </div>
-
-              {/* 編輯區 */}
-              {selectedWorkId && (
-                <AdminWorkEditor workId={selectedWorkId} />
+              {selectedWorkId ? (
+                <AdminWorkEditor 
+                  workId={selectedWorkId} 
+                  onBack={() => setSelectedWorkId(null)}
+                />
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {allWorks.map((work: any) => (
+                    <button
+                      key={work.id}
+                      onClick={() => setSelectedWorkId(work.id)}
+                      className="p-4 rounded-sm text-left transition-all hover:shadow-lg"
+                      style={{
+                        background: "rgba(200, 180, 160, 0.3)",
+                        border: "2px solid #8b7355",
+                        color: "#5a4a3a",
+                      }}
+                    >
+                      <p className="font-bold">{work.title || `第 ${work.workNumber} 組`}</p>
+                      <p className="text-sm">創作者：{work.author || "待公布"}</p>
+                      <p className="text-xs mt-2" style={{ color: "#a89080" }}>
+                        {work.image1Url ? "✓ 已上傳圖片" : "✗ 未上傳圖片"}
+                      </p>
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
           )}
@@ -196,7 +185,135 @@ export default function AdminPanel() {
   );
 }
 
-function AdminWorkEditor({ workId }: { workId: number }) {
+function AdminPromoEditor({ video }: { video: any }) {
+  const updateMutation = trpc.promotionalVideos.update.useMutation();
+  
+  const [promoTitle, setPromoTitle] = useState(video.title || "");
+  const [promoUrl, setPromoUrl] = useState(video.videoUrl || "");
+  const [promoFile, setPromoFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [lastSaved, setLastSaved] = useState<string>("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  // 自動儲存
+  useEffect(() => {
+    const autoSaveTimer = setTimeout(async () => {
+      if (promoTitle !== video.title || promoUrl !== video.videoUrl) {
+        try {
+          setIsSaving(true);
+          await updateMutation.mutateAsync({
+            id: video.id,
+            title: promoTitle,
+            videoUrl: promoUrl,
+          });
+          setLastSaved(new Date().toLocaleTimeString("zh-TW"));
+        } catch (error) {
+          console.error("自動儲存失敗", error);
+        } finally {
+          setIsSaving(false);
+        }
+      }
+    }, 2000); // 2 秒後自動儲存
+
+    return () => clearTimeout(autoSaveTimer);
+  }, [promoTitle, promoUrl]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPromoFile(file);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!promoFile) return;
+
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append("file", promoFile);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.ok) {
+        const { url } = await res.json();
+        setPromoUrl(url);
+        setPromoFile(null);
+      }
+    } catch (error) {
+      alert("上傳失敗");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label style={{ color: "#8b7355", fontWeight: "600" }}>標題</label>
+        <input
+          type="text"
+          value={promoTitle}
+          onChange={(e) => setPromoTitle(e.target.value)}
+          className="w-full p-2 border rounded mt-1"
+          style={{ borderColor: "#8b7355" }}
+          placeholder="宣傳片標題"
+        />
+      </div>
+
+      <div>
+        <label style={{ color: "#8b7355", fontWeight: "600" }}>影片 URL</label>
+        <input
+          type="text"
+          value={promoUrl}
+          onChange={(e) => setPromoUrl(e.target.value)}
+          className="w-full p-2 border rounded mt-1"
+          style={{ borderColor: "#8b7355" }}
+          placeholder="輸入影片 URL 或上傳檔案"
+        />
+      </div>
+
+      <div>
+        <label style={{ color: "#8b7355", fontWeight: "600" }}>上傳影片檔案</label>
+        <div className="flex gap-2 mt-2">
+          <input
+            type="file"
+            accept="video/*"
+            onChange={handleFileChange}
+            className="flex-1 p-2 border rounded"
+            style={{ borderColor: "#8b7355" }}
+          />
+          <button
+            onClick={handleUpload}
+            disabled={!promoFile || isUploading}
+            className="px-4 py-2 rounded-sm font-bold"
+            style={{
+              background: !promoFile || isUploading ? "#ccc" : "#d4a574",
+              color: "white",
+            }}
+          >
+            {isUploading ? "上傳中..." : "上傳"}
+          </button>
+        </div>
+      </div>
+
+      <div
+        className="p-3 rounded-sm text-sm"
+        style={{
+          background: "rgba(212, 165, 116, 0.1)",
+          color: "#8b7355",
+        }}
+      >
+        {isSaving ? "儲存中..." : lastSaved ? `最後儲存時間：${lastSaved}` : "未儲存"}
+      </div>
+    </div>
+  );
+}
+
+function AdminWorkEditor({ workId, onBack }: { workId: number; onBack: () => void }) {
   const { data: work } = trpc.works.getById.useQuery(workId);
   const updateMutation = trpc.works.update.useMutation();
 
@@ -208,6 +325,8 @@ function AdminWorkEditor({ workId }: { workId: number }) {
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [lastSaved, setLastSaved] = useState<string>("");
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (work) {
@@ -219,6 +338,36 @@ function AdminWorkEditor({ workId }: { workId: number }) {
       });
     }
   }, [work]);
+
+  // 自動儲存
+  useEffect(() => {
+    const autoSaveTimer = setTimeout(async () => {
+      if (
+        editData.title !== work?.title ||
+        editData.author !== work?.author ||
+        editData.description !== work?.description ||
+        editData.image1Url !== work?.image1Url
+      ) {
+        try {
+          setIsSaving(true);
+          await updateMutation.mutateAsync({
+            id: workId,
+            title: editData.title,
+            author: editData.author,
+            description: editData.description,
+            image1Url: editData.image1Url,
+          });
+          setLastSaved(new Date().toLocaleTimeString("zh-TW"));
+        } catch (error) {
+          console.error("自動儲存失敗", error);
+        } finally {
+          setIsSaving(false);
+        }
+      }
+    }, 2000);
+
+    return () => clearTimeout(autoSaveTimer);
+  }, [editData, work?.title, work?.author, work?.description, work?.image1Url]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -235,143 +384,155 @@ function AdminWorkEditor({ workId }: { workId: number }) {
     }
   };
 
-  const handleSave = async () => {
+  const handleUploadImage = async () => {
+    if (!imageFile) return;
+
     try {
       setIsUploading(true);
+      const formData = new FormData();
+      formData.append("file", imageFile);
 
-      let finalImageUrl = editData.image1Url;
-      if (imageFile) {
-        const formData = new FormData();
-        formData.append("file", imageFile);
-
-        const uploadResponse = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (uploadResponse.ok) {
-          const { url } = await uploadResponse.json();
-          finalImageUrl = url;
-        }
-      }
-
-      await updateMutation.mutateAsync({
-        id: workId,
-        title: editData.title,
-        author: editData.author,
-        description: editData.description,
-        image1Url: finalImageUrl,
+      const uploadResponse = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
       });
 
-      setImageFile(null);
-      alert("作品已更新");
+      if (uploadResponse.ok) {
+        const { url } = await uploadResponse.json();
+        setEditData({
+          ...editData,
+          image1Url: url,
+        });
+        setImageFile(null);
+      }
     } catch (error) {
-      alert("更新失敗");
+      alert("上傳失敗");
     } finally {
       setIsUploading(false);
     }
   };
 
   return (
-    <div
-      className="p-6 rounded-sm"
-      style={{
-        background: "rgba(200, 180, 160, 0.2)",
-        border: "2px dashed #8b7355",
-      }}
-    >
-      <h3
-        className="text-xl font-bold mb-4"
+    <div>
+      {/* 返回按鈕 */}
+      <button
+        onClick={onBack}
+        className="mb-6 px-4 py-2 rounded-sm"
         style={{
-          fontFamily: "'Noto Serif TC', serif",
-          color: "#5a4a3a",
+          background: "#d4a574",
+          color: "white",
+          fontWeight: "600",
         }}
       >
-        編輯作品
-      </h3>
+        ← 返回列表
+      </button>
 
-      <div className="space-y-4">
-        <div>
-          <label style={{ color: "#8b7355", fontWeight: "600" }}>標題</label>
-          <input
-            type="text"
-            value={editData.title}
-            onChange={(e) => setEditData({ ...editData, title: e.target.value })}
-            className="w-full p-2 border rounded mt-1"
-            style={{ borderColor: "#8b7355" }}
-          />
-        </div>
-
-        <div>
-          <label style={{ color: "#8b7355", fontWeight: "600" }}>創作者</label>
-          <input
-            type="text"
-            value={editData.author}
-            onChange={(e) => setEditData({ ...editData, author: e.target.value })}
-            className="w-full p-2 border rounded mt-1"
-            style={{ borderColor: "#8b7355" }}
-          />
-        </div>
-
-        <div>
-          <label style={{ color: "#8b7355", fontWeight: "600" }}>介紹（100 字以內）</label>
-          <textarea
-            value={editData.description}
-            onChange={(e) =>
-              setEditData({
-                ...editData,
-                description: e.target.value.slice(0, 200),
-              })
-            }
-            className="w-full p-2 border rounded mt-1"
-            style={{ borderColor: "#8b7355", minHeight: "100px" }}
-            maxLength={200}
-          />
-          <p style={{ color: "#a89080", fontSize: "0.9rem", marginTop: "0.5rem" }}>
-            {editData.description.length} / 200 字
-          </p>
-        </div>
-
-        <div>
-          <label style={{ color: "#8b7355", fontWeight: "600" }}>圖片</label>
-          {editData.image1Url && (
-            <div className="mt-2 mb-4">
-              <img
-                src={editData.image1Url}
-                alt="預覽"
-                className="w-full max-w-xs rounded"
-                style={{ border: "2px solid #8b7355" }}
-              />
-            </div>
-          )}
-          <label
-            className="block p-4 border-2 border-dashed rounded-sm text-center cursor-pointer mt-2"
-            style={{
-              borderColor: "#8b7355",
-              background: "rgba(200, 180, 160, 0.1)",
-            }}
-          >
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-            />
-            <p style={{ color: "#8b7355" }}>點擊上傳圖片</p>
-          </label>
-        </div>
-
-        <button
-          onClick={handleSave}
-          disabled={isUploading}
-          className="w-full p-3 rounded-sm font-bold"
+      <div
+        className="p-6 rounded-sm"
+        style={{
+          background: "rgba(200, 180, 160, 0.2)",
+          border: "2px dashed #8b7355",
+        }}
+      >
+        <h3
+          className="text-xl font-bold mb-4"
           style={{
-            background: isUploading ? "#ccc" : "#d4a574",
-            color: "white",
+            fontFamily: "'Noto Serif TC', serif",
+            color: "#5a4a3a",
           }}
         >
-          {isUploading ? "保存中..." : "保存"}
-        </button>
+          編輯作品：{editData.title || `第 ${work?.workNumber} 組`}
+        </h3>
+
+        <div className="space-y-4">
+          <div>
+            <label style={{ color: "#8b7355", fontWeight: "600" }}>標題</label>
+            <input
+              type="text"
+              value={editData.title}
+              onChange={(e) => setEditData({ ...editData, title: e.target.value })}
+              className="w-full p-2 border rounded mt-1"
+              style={{ borderColor: "#8b7355" }}
+              placeholder="作品標題"
+            />
+          </div>
+
+          <div>
+            <label style={{ color: "#8b7355", fontWeight: "600" }}>創作者</label>
+            <input
+              type="text"
+              value={editData.author}
+              onChange={(e) => setEditData({ ...editData, author: e.target.value })}
+              className="w-full p-2 border rounded mt-1"
+              style={{ borderColor: "#8b7355" }}
+              placeholder="創作者名稱"
+            />
+          </div>
+
+          <div>
+            <label style={{ color: "#8b7355", fontWeight: "600" }}>詳細介紹（500 字以內）</label>
+            <textarea
+              value={editData.description}
+              onChange={(e) =>
+                setEditData({
+                  ...editData,
+                  description: e.target.value.slice(0, 1000),
+                })
+              }
+              className="w-full p-2 border rounded mt-1"
+              style={{ borderColor: "#8b7355", minHeight: "200px" }}
+              maxLength={1000}
+              placeholder="請輸入作品的詳細介紹（500 字以內）"
+            />
+            <p style={{ color: "#a89080", fontSize: "0.9rem", marginTop: "0.5rem" }}>
+              {editData.description.length} / 1000 字（建議 500 字）
+            </p>
+          </div>
+
+          <div>
+            <label style={{ color: "#8b7355", fontWeight: "600" }}>圖片</label>
+            {editData.image1Url && (
+              <div className="mt-2 mb-4">
+                <img
+                  src={editData.image1Url}
+                  alt="預覽"
+                  className="w-full max-w-xs rounded"
+                  style={{ border: "2px solid #8b7355" }}
+                />
+              </div>
+            )}
+            <div className="flex gap-2 mt-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="flex-1 p-2 border rounded"
+                style={{ borderColor: "#8b7355" }}
+              />
+              <button
+                onClick={handleUploadImage}
+                disabled={!imageFile || isUploading}
+                className="px-4 py-2 rounded-sm font-bold"
+                style={{
+                  background: !imageFile || isUploading ? "#ccc" : "#d4a574",
+                  color: "white",
+                }}
+              >
+                {isUploading ? "上傳中..." : "上傳"}
+              </button>
+            </div>
+          </div>
+
+          <div
+            className="p-3 rounded-sm text-sm"
+            style={{
+              background: "rgba(212, 165, 116, 0.1)",
+              color: "#8b7355",
+            }}
+          >
+            {isSaving ? "儲存中..." : lastSaved ? `最後儲存時間：${lastSaved}` : "未儲存"}
+          </div>
+        </div>
       </div>
     </div>
   );
