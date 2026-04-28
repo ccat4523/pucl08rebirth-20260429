@@ -257,75 +257,71 @@ export default function WorkDetail() {
             )}
           </div>
 
-          {/* 2 張直照片並排 */}
-          <div className="mb-8">
-            <div className="flex gap-4 justify-center flex-wrap">
-              {/* 第一張圖片 */}
-              <div
-                className="flex items-center justify-center rounded-sm overflow-hidden"
-                style={{
-                  background: "rgba(200, 180, 160, 0.3)",
-                  border: "2px solid #8b7355",
-                  width: "500px",
-                  height: "700px",
-                  maxWidth: "calc(50% - 8px)",
-                  minWidth: "300px",
-                }}
-              >
-                {editData.image1Url ? (
-                  <img
-                    src={editData.image1Url}
-                    alt="作品圖片 1"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <p
-                    style={{
-                      fontFamily: "'Noto Sans TC', sans-serif",
-                      color: "#a89080",
-                    }}
-                  >
-                    暫無圖片 1
-                  </p>
-                )}
-              </div>
+          {/* 2 張直照片上下呈現 */}
+          <div className="mb-8 flex flex-col items-center gap-4">
+            {/* 第一張圖片 */}
+            <div
+              className="flex items-center justify-center rounded-sm overflow-hidden"
+              style={{
+                background: "rgba(200, 180, 160, 0.3)",
+                border: "2px solid #8b7355",
+                width: "500px",
+                height: "700px",
+                maxWidth: "100%",
+              }}
+            >
+              {editData.image1Url ? (
+                <img
+                  src={editData.image1Url}
+                  alt="作品圖片 1"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <p
+                  style={{
+                    fontFamily: "'Noto Sans TC', sans-serif",
+                    color: "#a89080",
+                  }}
+                >
+                  暫無圖片 1
+                </p>
+              )}
+            </div>
 
-              {/* 第二張圖片 */}
-              <div
-                className="flex items-center justify-center rounded-sm overflow-hidden"
-                style={{
-                  background: "rgba(200, 180, 160, 0.3)",
-                  border: "2px solid #8b7355",
-                  width: "500px",
-                  height: "700px",
-                  maxWidth: "calc(50% - 8px)",
-                  minWidth: "300px",
-                }}
-              >
-                {editData.image2Url ? (
-                  <img
-                    src={editData.image2Url}
-                    alt="作品圖片 2"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <p
-                    style={{
-                      fontFamily: "'Noto Sans TC', sans-serif",
-                      color: "#a89080",
-                    }}
-                  >
-                    暫無圖片 2
-                  </p>
-                )}
-              </div>
+            {/* 第二張圖片 */}
+            <div
+              className="flex items-center justify-center rounded-sm overflow-hidden"
+              style={{
+                background: "rgba(200, 180, 160, 0.3)",
+                border: "2px solid #8b7355",
+                width: "500px",
+                height: "700px",
+                maxWidth: "100%",
+              }}
+            >
+              {editData.image2Url ? (
+                <img
+                  src={editData.image2Url}
+                  alt="作品圖片 2"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <p
+                  style={{
+                    fontFamily: "'Noto Sans TC', sans-serif",
+                    color: "#a89080",
+                  }}
+                >
+                  暫無圖片 2
+                </p>
+              )}
             </div>
 
             {/* 圖片上傳區（編輯模式） */}
             {isEditing && (
-              <div className="mt-4 flex gap-4 flex-wrap justify-center">
+              <div className="mt-4 w-full flex flex-col gap-4">
                 <label
-                  className="block p-4 border-2 border-dashed rounded-sm text-center cursor-pointer flex-1 min-w-[200px]"
+                  className="block p-4 border-2 border-dashed rounded-sm text-center cursor-pointer w-full"
                   style={{
                     borderColor: "#8b7355",
                     background: "rgba(200, 180, 160, 0.1)",
@@ -347,7 +343,7 @@ export default function WorkDetail() {
                   </p>
                 </label>
                 <label
-                  className="block p-4 border-2 border-dashed rounded-sm text-center cursor-pointer flex-1 min-w-[200px]"
+                  className="block p-4 border-2 border-dashed rounded-sm text-center cursor-pointer w-full"
                   style={{
                     borderColor: "#8b7355",
                     background: "rgba(200, 180, 160, 0.1)",
