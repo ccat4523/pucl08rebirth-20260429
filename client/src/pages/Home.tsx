@@ -539,77 +539,34 @@ export default function Home() {
             作品展示
           </h2>
 
-          {/* 小組作品卡片網格 - 等比例縮放 */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          {/* 小組作品卡片網格 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {allWorks
-              .filter((work: any) => work.image1Url) // 只顯示有圖片的作品
-              .map((work: any, index: number) => (
+              .filter((work: any) => work.image1Url)
+              .map((work: any) => (
               <a
                 key={work.id}
                 href={`/work/${work.id}`}
-                className="rounded-sm transition-all duration-300 hover:shadow-lg block overflow-hidden flex flex-col"
-                style={{
-                  background: "rgba(255, 255, 255, 0.85)",
-                  border: "2px solid #8b7355",
-                  animationDelay: `${index * 0.1}s`,
-                  textDecoration: "none",
-                  aspectRatio: "3/4",
-                }}
+                className="block overflow-hidden rounded-sm border-2 border-amber-900 bg-white bg-opacity-85 hover:shadow-lg transition-shadow"
               >
-                {/* 圖片預覽 - 佔卡片 60% */}
-                {work.image1Url && (
-                  <div
-                    className="w-full overflow-hidden flex-shrink-0"
-                    style={{
-                      flex: "0 0 60%",
-                      background: "rgba(200, 180, 160, 0.3)",
-                    }}
-                  >
-                    <img
-                      src={work.image1Url}
-                      alt={work.title || `第 ${work.workNumber} 組`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
+                {/* 圖片預覽 */}
+                <div className="w-full h-40 sm:h-48 overflow-hidden bg-amber-100">
+                  <img
+                    src={work.image1Url}
+                    alt={work.title || `第 ${work.workNumber} 組`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
 
-                {/* 文字內容 - 佔卡片 40% */}
-                <div className="flex-1 flex flex-col justify-between p-[clamp(0.75rem,2vw,1.5rem)] overflow-hidden">
-                  {/* 大標題：組別名稱 */}
-                  <h4
-                    className="font-bold line-clamp-2"
-                    style={{
-                      fontFamily: "'Noto Serif TC', serif",
-                      color: "#5a4a3a",
-                      fontSize: "clamp(0.875rem, 2.5vw, 1.25rem)",
-                      lineHeight: "1.2",
-                      marginBottom: "clamp(0.25rem, 0.5vw, 0.5rem)",
-                    }}
-                  >
+                {/* 文字內容 */}
+                <div className="p-3 sm:p-4">
+                  <h4 className="text-sm sm:text-base font-bold text-amber-950 mb-1 line-clamp-2" style={{ fontFamily: "'Noto Serif TC', serif" }}>
                     {work.title || `第 ${work.workNumber} 組作品`}
                   </h4>
-                  {/* 子標題：組別 */}
-                  <p
-                    className="font-semibold"
-                    style={{
-                      fontFamily: "'Noto Sans TC', sans-serif",
-                      color: "#8b7355",
-                      fontSize: "clamp(0.625rem, 1.5vw, 0.875rem)",
-                      marginBottom: "clamp(0.25rem, 0.5vw, 0.5rem)",
-                    }}
-                  >
+                  <p className="text-xs sm:text-sm font-semibold text-amber-800 mb-2">
                     第 {work.workNumber} 組
                   </p>
-                  {/* 短介紹：約30 字 */}
-                  <p
-                    className="line-clamp-2"
-                    style={{
-                      fontFamily: "'Noto Sans TC', sans-serif",
-                      color: "#6b5d4f",
-                      fontSize: "clamp(0.625rem, 1.5vw, 0.875rem)",
-                      lineHeight: "1.4",
-                    }}
-                  >
+                  <p className="text-xs sm:text-sm text-amber-900 line-clamp-2 leading-relaxed">
                     {work.description || "敬請期待..."}
                   </p>
                 </div>
