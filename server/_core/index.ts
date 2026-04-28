@@ -8,10 +8,9 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
-import { storagePut, storageGetSignedUrl } from "../storage";
+import { storagePut } from "../storage";
 import multer from "multer";
 import type { Request as ExpressRequest } from "express";
-import { randomUUID } from "crypto";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -52,9 +51,7 @@ async function startServer() {
       }
       
       const fileType = req.body.type || 'file';
-      // 使用 UUID 作為檔案名稱，避免中文字符問題
-      const ext = req.file.originalname.split('.').pop() || 'bin';
-      const fileKey = `uploads/${fileType}/${Date.now()}-${randomUUID()}.${ext}`;
+      const fileKey = `uploads/${fileType}/${Date.now()}-${req.file.originalname}`;
       
       const { url, key } = await storagePut(fileKey, req.file.buffer as Buffer, req.file.mimetype);
       

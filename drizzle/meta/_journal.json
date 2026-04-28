@@ -22,20 +22,6 @@
       "when": 1777341615204,
       "tag": "0002_huge_tigra",
       "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1777346190091,
-      "tag": "0003_lucky_wildside",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1777346293504,
-      "tag": "0004_shocking_dakota_north",
-      "breakpoints": true
     }
   ]
 }
