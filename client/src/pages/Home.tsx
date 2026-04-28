@@ -540,7 +540,7 @@ export default function Home() {
           </h2>
 
           {/* 小組作品卡片網格 */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 auto-rows-max">
             {allWorks
               .filter((work: any) => work.image1Url) // 只顯示有圖片的作品
               .map((work: any, index: number) => (
@@ -558,9 +558,8 @@ export default function Home() {
                 {/* 圖片預覽 */}
                 {work.image1Url && (
                   <div
-                    className="w-full overflow-hidden"
+                    className="w-full overflow-hidden aspect-video"
                     style={{
-                      height: "200px",
                       background: "rgba(200, 180, 160, 0.3)",
                     }}
                   >
@@ -573,10 +572,10 @@ export default function Home() {
                 )}
 
                 {/* 文字內容 */}
-                <div className="p-6">
+                <div className="p-4 sm:p-6 flex flex-col justify-between h-full">
                   {/* 大標題：組別名稱 */}
                   <h4
-                    className="text-xl sm:text-2xl font-bold mb-2"
+                    className="text-lg sm:text-xl font-bold mb-1 sm:mb-2 line-clamp-2"
                     style={{
                       fontFamily: "'Noto Serif TC', serif",
                       color: "#5a4a3a",
@@ -586,7 +585,7 @@ export default function Home() {
                   </h4>
                   {/* 子標題：組別 */}
                   <p
-                    className="text-sm sm:text-base mb-4"
+                    className="text-xs sm:text-sm mb-2 sm:mb-3"
                     style={{
                       fontFamily: "'Noto Sans TC', sans-serif",
                       color: "#8b7355",
@@ -595,13 +594,13 @@ export default function Home() {
                   >
                     第 {work.workNumber} 組
                   </p>
-                  {/* 短介紹：約 30 字 */}
+                  {/* 短介紹：約30 字 */}
                   <p
-                    className="text-sm leading-relaxed line-clamp-2"
+                    className="text-xs sm:text-sm leading-relaxed line-clamp-2"
                     style={{
                       fontFamily: "'Noto Sans TC', sans-serif",
                       color: "#6b5d4f",
-                      lineHeight: "1.6",
+                      lineHeight: "1.5",
                     }}
                   >
                     {work.description || "敬請期待..."}
