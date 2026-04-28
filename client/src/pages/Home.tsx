@@ -315,7 +315,7 @@ export default function Home() {
                 lineHeight: "1.8",
               }}
             >
-              這次畢業展，17位同學、17種創作語彙，各自以不同的姿態，訴說屬於我們的故事。
+              這次畢業展，17組同學、17種創作語彙，各自以不同的妧態，訴說屬於我們的故事。
             </p>
             <p
               className="text-sm sm:text-base leading-relaxed mt-4"
