@@ -45,6 +45,9 @@ export default function Home() {
   // 獲取所有作品數據
   const { data: allWorks = [] } = trpc.works.list.useQuery();
 
+  // 獲取宣傳片數據
+  const { data: videos = [] } = trpc.promotionalVideos.list.useQuery();
+
   // 示例作品數據（17個）
   const works = Array.from({ length: 17 }, (_, i) => ({
     id: i + 1,
@@ -230,6 +233,69 @@ export default function Home() {
 
 
 
+      {/* ===== PROMOTIONAL VIDEO SECTION ===== */}
+      <section
+        id="promo"
+        className="py-20 px-4"
+        style={{
+          background: "linear-gradient(180deg, rgba(232, 223, 210, 0.6) 0%, rgba(232, 223, 210, 0.8) 100%)",
+        }}
+      >
+        <div
+          className="max-w-5xl mx-auto"
+        >
+          <h2
+            className="text-3xl sm:text-4xl font-bold text-center mb-12"
+            style={{
+              fontFamily: "'Noto Serif TC', serif",
+              color: "#5a4a3a",
+            }}
+          >
+            宣傳片
+          </h2>
+
+          {/* 只顯示第一個宣傳片 */}
+          <div className="max-w-2xl mx-auto">
+            {videos.length > 0 && (
+              <div
+                className="p-6 rounded-sm"
+                style={{
+                  background: "rgba(255, 255, 255, 0.85)",
+                  border: "2px solid #8b7355",
+                }}
+              >
+                <h3
+                  className="text-xl font-bold mb-4 text-center"
+                  style={{
+                    fontFamily: "'Noto Serif TC', serif",
+                    color: "#5a4a3a",
+                  }}
+                >
+                  {videos[0].title || "宣傳片"}
+                </h3>
+                {videos[0].videoUrl ? (
+                  <iframe
+                    src={videos[0].videoUrl}
+                    className="w-full aspect-video rounded"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <div
+                    className="w-full aspect-video flex items-center justify-center rounded"
+                    style={{
+                      background: "rgba(200, 200, 200, 0.3)",
+                    }}
+                  >
+                    <span style={{ color: "#8b7355" }}>暫無影片</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* ===== WORKS SECTION ===== */}
       <section
         id="works"
@@ -253,20 +319,6 @@ export default function Home() {
           >
             作品展示
           </h2>
-
-          {/* 宣傳片區 */}
-          <div className="mb-16">
-            <h3
-              className="text-2xl sm:text-3xl font-bold text-center mb-8"
-              style={{
-                fontFamily: "'Noto Serif TC', serif",
-                color: "#5a4a3a",
-              }}
-            >
-              宣傳片
-            </h3>
-            <VideoCarousel />
-          </div>
 
           {/* 小組作品卡片網格 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
