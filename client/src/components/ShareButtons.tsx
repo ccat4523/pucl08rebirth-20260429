@@ -20,9 +20,12 @@ export default function ShareButtons({
 }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
 
-  // 添加 v=2 參數到 URL
+  // 確保 URL 中只有一個 v=2 參數
   const getShareUrl = () => {
-    return url.includes('?') ? `${url}&v=2` : `${url}?v=2`;
+    // 移除已存在的 v=2 參數
+    let cleanUrl = url.replace(/[?&]v=2/g, '');
+    // 添加 v=2 參數
+    return cleanUrl.includes('?') ? `${cleanUrl}&v=2` : `${cleanUrl}?v=2`;
   };
 
   const handleCopyLink = () => {

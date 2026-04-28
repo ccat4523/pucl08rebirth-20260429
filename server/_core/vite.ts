@@ -46,7 +46,7 @@ export async function setupVite(app: express.Express, server: Server) {
         const ogTitle = `第 ${workId} 組作品 - 蛻生`;
         const ogDescription = `靜宜大學中國文學系第八屆畢業展覽作品展示`;
         const ogImage = `https://d2xsxph8kpxj0f.cloudfront.net/310519663604108019/WWoiuccXVRycCjqYzzpk6j/hands_butterfly-82t2QECvULcYdbgUGVUnLa.webp`;
-        const ogUrl = `https://pumc18light-wwoiuccx.manus.space${url.split('?')[0]}`;
+        const ogUrl = `https://pumc18light-wwoiuccx.manus.space${url.split('?')[0]}?v=2`;
 
         // 替換 OG 標籤
         template = template.replace(
