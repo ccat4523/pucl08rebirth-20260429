@@ -265,8 +265,8 @@ export default function WorkDetail() {
               style={{
                 background: "rgba(200, 180, 160, 0.3)",
                 border: "2px solid #8b7355",
-                width: "500px",
-                height: "700px",
+                width: "1080px",
+                height: "650px",
                 maxWidth: "100%",
               }}
             >
@@ -294,8 +294,8 @@ export default function WorkDetail() {
               style={{
                 background: "rgba(200, 180, 160, 0.3)",
                 border: "2px solid #8b7355",
-                width: "500px",
-                height: "700px",
+                width: "1080px",
+                height: "650px",
                 maxWidth: "100%",
               }}
             >
