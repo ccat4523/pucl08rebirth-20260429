@@ -253,7 +253,7 @@ export default function Home() {
           </h2>
 
           {/* 小組介紹卡片網格 */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {allWorks.map((work: any, index: number) => (
               <a
                 key={work.id}
@@ -266,30 +266,33 @@ export default function Home() {
                   textDecoration: "none",
                 }}
               >
+                {/* 大標題：組別名稱 */}
                 <h3
-                  className="text-lg sm:text-xl font-bold mb-2"
+                  className="text-xl sm:text-2xl font-bold mb-2"
                   style={{
                     fontFamily: "'Noto Serif TC', serif",
                     color: "#5a4a3a",
                   }}
                 >
-                  {work.title || `第 ${work.workNumber} 組`}
+                  {work.title || `第 ${work.workNumber} 組作品`}
                 </h3>
+                {/* 子標題：組別 */}
                 <p
-                  className="text-sm sm:text-base mb-3"
+                  className="text-sm sm:text-base mb-4"
+                  style={{
+                    fontFamily: "'Noto Sans TC', sans-serif",
+                    color: "#8b7355",
+                    fontWeight: "600",
+                  }}
+                >
+                  第 {work.workNumber} 組
+                </p>
+                {/* 短介紹：約 30 字 */}
+                <p
+                  className="text-sm leading-relaxed line-clamp-2"
                   style={{
                     fontFamily: "'Noto Sans TC', sans-serif",
                     color: "#6b5d4f",
-                    fontWeight: "500",
-                  }}
-                >
-                  創作者：{work.author || "待公布"}
-                </p>
-                <p
-                  className="text-sm leading-relaxed"
-                  style={{
-                    fontFamily: "'Noto Sans TC', sans-serif",
-                    color: "#5a4a3a",
                     lineHeight: "1.6",
                   }}
                 >
