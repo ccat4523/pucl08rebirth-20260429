@@ -228,81 +228,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== SMALL GROUP SHARING SECTION ===== */}
-      <section
-        id="sharing"
-        className="py-20 px-4"
-        style={{
-          background: "linear-gradient(180deg, rgba(232, 223, 210, 0.6) 0%, rgba(232, 223, 210, 0.8) 100%)",
-        }}
-      >
-        <div
-          ref={sharingSection.ref}
-          className={`max-w-5xl mx-auto transition-all duration-1000 ${
-            sharingSection.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
-        >
-          <h2
-            className="text-3xl sm:text-4xl font-bold text-center mb-12"
-            style={{
-              fontFamily: "'Noto Serif TC', serif",
-              color: "#5a4a3a",
-            }}
-          >
-            小組作品
-          </h2>
 
-          {/* 小組介紹卡片網格 */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {allWorks.map((work: any, index: number) => (
-              <a
-                key={work.id}
-                href={`/work/${work.id}`}
-                className="p-6 rounded-sm transition-all duration-300 hover:shadow-lg block"
-                style={{
-                  background: "rgba(255, 255, 255, 0.85)",
-                  border: "2px solid #8b7355",
-                  animationDelay: `${index * 0.1}s`,
-                  textDecoration: "none",
-                }}
-              >
-                {/* 大標題：組別名稱 */}
-                <h3
-                  className="text-xl sm:text-2xl font-bold mb-2"
-                  style={{
-                    fontFamily: "'Noto Serif TC', serif",
-                    color: "#5a4a3a",
-                  }}
-                >
-                  {work.title || `第 ${work.workNumber} 組作品`}
-                </h3>
-                {/* 子標題：組別 */}
-                <p
-                  className="text-sm sm:text-base mb-4"
-                  style={{
-                    fontFamily: "'Noto Sans TC', sans-serif",
-                    color: "#8b7355",
-                    fontWeight: "600",
-                  }}
-                >
-                  第 {work.workNumber} 組
-                </p>
-                {/* 短介紹：約 30 字 */}
-                <p
-                  className="text-sm leading-relaxed line-clamp-2"
-                  style={{
-                    fontFamily: "'Noto Sans TC', sans-serif",
-                    color: "#6b5d4f",
-                    lineHeight: "1.6",
-                  }}
-                >
-                  {work.description || "敬請期待..."}
-                </p>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ===== WORKS SECTION ===== */}
       <section
@@ -328,22 +254,71 @@ export default function Home() {
             作品展示
           </h2>
 
-          {/* 影片展示區 */}
-          <VideoCarousel />
+          {/* 宣傳片區 */}
+          <div className="mb-16">
+            <h3
+              className="text-2xl sm:text-3xl font-bold text-center mb-8"
+              style={{
+                fontFamily: "'Noto Serif TC', serif",
+                color: "#5a4a3a",
+              }}
+            >
+              宣傳片
+            </h3>
+            <VideoCarousel />
+          </div>
 
-          {/* 翻書動畫網格 */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {works.map((work, index) => (
-              <div key={work.id} style={{ animationDelay: `${index * 0.1}s` }}>
-                <EditableWorkCard
-                  id={work.id}
-                  workNumber={work.id}
-                  initialTitle={work.title}
-                  initialAuthor={work.author}
-                />
-              </div>
+          {/* 小組作品卡片網格 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {allWorks.map((work: any, index: number) => (
+              <a
+                key={work.id}
+                href={`/work/${work.id}`}
+                className="p-6 rounded-sm transition-all duration-300 hover:shadow-lg block"
+                style={{
+                  background: "rgba(255, 255, 255, 0.85)",
+                  border: "2px solid #8b7355",
+                  animationDelay: `${index * 0.1}s`,
+                  textDecoration: "none",
+                }}
+              >
+                {/* 大標題：組別名稱 */}
+                <h4
+                  className="text-xl sm:text-2xl font-bold mb-2"
+                  style={{
+                    fontFamily: "'Noto Serif TC', serif",
+                    color: "#5a4a3a",
+                  }}
+                >
+                  {work.title || `第 ${work.workNumber} 組作品`}
+                </h4>
+                {/* 子標題：組別 */}
+                <p
+                  className="text-sm sm:text-base mb-4"
+                  style={{
+                    fontFamily: "'Noto Sans TC', sans-serif",
+                    color: "#8b7355",
+                    fontWeight: "600",
+                  }}
+                >
+                  第 {work.workNumber} 組
+                </p>
+                {/* 短介紹：約 30 字 */}
+                <p
+                  className="text-sm leading-relaxed line-clamp-2"
+                  style={{
+                    fontFamily: "'Noto Sans TC', sans-serif",
+                    color: "#6b5d4f",
+                    lineHeight: "1.6",
+                  }}
+                >
+                  {work.description || "敬請期待..."}
+                </p>
+              </a>
             ))}
           </div>
+
+
         </div>
       </section>
 
