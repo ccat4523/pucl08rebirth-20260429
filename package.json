@@ -24,6 +24,6 @@ services:
       - key: OWNER_OPEN_ID
         sync: false
 
-  - type: postgresql
-    name: pucl08rebirth-db
+databases:
+  - name: pucl08rebirth-db
     plan: free
