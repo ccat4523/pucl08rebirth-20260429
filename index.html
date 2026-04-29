@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蛻生——靜宜大學中國文學系第八屆畢業展覽</title>
+    <meta name="description" content="靜宜大學中國文學系第八屆畢業展覽「蛻生」，文學系學生的創意與成長">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Noto Sans TC', 'Noto Serif TC', sans-serif;
+        }
+        .work-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .work-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+        }
+        .image-placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 導覽列 -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-gray-800">蛻生——靜宜中文第八屆畢業展</h1>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="text-gray-600 hover:text-gray-900 transition">首頁</a>
+                    <a href="#works" class="text-gray-600 hover:text-gray-900 transition">作品</a>
+                    <a href="#about" class="text-gray-600 hover:text-gray-900 transition">關於</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主內容 -->
+    <div id="root" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- 英雄區域 -->
+        <div id="home" class="text-center py-16">
+            <h1 class="text-5xl md:text-6xl font-bold text-gray-800 mb-4">蛻生</h1>
+            <p class="text-xl text-gray-600 mb-8">靜宜大學中國文學系第八屆畢業展覽</p>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto">17組同學、17種創作語彙，各自以不同的姿態，訴說屬於我們的故事。</p>
+        </div>
+
+        <!-- 作品區域 -->
+        <div id="works" class="py-12">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">展出作品</h2>
+            <div id="works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 作品會由 JavaScript 動態產生 -->
+            </div>
+        </div>
+
+        <!-- 關於區域 -->
+        <div id="about" class="py-12 text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">關於展覽</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">「蛻生」象徵著文學系學生四年來的成長與轉變。透過多元的創作形式，展現文字的力量與生命的韌性。</p>
+        </div>
+    </div>
+
+    <!-- 頁尾 -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p>&copy; 2026 靜宜大學中國文學系第八屆畢業展覽。保留所有權利。</p>
+        </div>
+    </footer>
+
+    <script>
+        // 作品資料（您之後可以隨時修改）
+        const worksData = [
+            {
+                id: 1,
+                title: "蛻變",
+                author: "李明",
+                description: "關於成長與重生的故事。透過文字與影像的交織，呈現生命中的蛻變時刻。",
+                imageUrl: null,
+                videoUrl: null
+            },
+            {
+                id: 2,
+                title: "文學之光",
+                author: "王華",
+                description: "探索文字的力量，重新定義文學在當代社會的價值與意義。",
+                imageUrl: null,
+                videoUrl: null
+            },
+            {
+                id: 3,
+                title: "時光迴廊",
+                author: "陳怡君",
+                description: "以詩意的方式訴說記憶與時間的流動，帶領觀眾進入文學的時光隧道。",
+                imageUrl: null,
+                videoUrl: null
+            },
+            {
+                id: 4,
+                title: "墨韻",
+                author: "林志明",
+                description: "結合傳統書法與現代設計，展現漢字之美。",
+                imageUrl: null,
+                videoUrl: null
+            },
+            {
+                id: 5,
+                title: "彼岸花",
+                author: "張雅婷",
+                description: "以小說形式探討生命與死亡的邊界，觸動人心的作品。",
+                imageUrl: null,
+                videoUrl: null
+            },
+            {
+                id: 6,
+                title: "青春紀事",
+                author: "吳冠廷",
+                description: "記錄大學四年的點點滴滴，喚起屬於青春的共同記憶。",
+                imageUrl: null,
+                videoUrl: null
+            }
+        ];
+
+        // 顯示作品的函數
+        function renderWorks() {
+            const grid = document.getElementById('works-grid');
+            if (!grid) return;
+
+            grid.innerHTML = worksData.map(work => `
+                <div class="work-card bg-white rounded-lg overflow-hidden shadow-lg cursor-pointer" onclick="showWorkDetail(${work.id})">
+                    <div class="image-placeholder w-full h-56 flex items-center justify-center">
+                        <span class="text-white text-sm px-4 text-center">📷 圖片待補<br>作品：${work.title}</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">${work.title}</h3>
+                        <p class="text-gray-600 mb-2">作者：${work.author}</p>
+                        <p class="text-gray-500 text-sm">${work.description.substring(0, 60)}${work.description.length > 60 ? '...' : ''}</p>
+                        <button class="mt-4 text-indigo-600 hover:text-indigo-800 transition">閱讀更多 →</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 顯示作品詳細資訊
+        function showWorkDetail(id) {
+            const work = worksData.find(w => w.id === id);
+            if (!work) return;
+
+            alert(`【${work.title}】\n作者：${work.author}\n\n${work.description}\n\n(圖片與影片將在稍後補上)`);
+        }
+
+        // 頁面載入時執行
+        document.addEventListener('DOMContentLoaded', () => {
+            renderWorks();
+        });
+    </script>
+</body>
+</html>
